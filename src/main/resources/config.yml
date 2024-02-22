@@ -1,0 +1,24 @@
+settings:
+  debug: false
+  prefix: "<white>[ <yellow>STC</yellow> ]"
+
+toggle_items:
+  MMOITEMS;MATERIAL;COAL_CRAFT:
+    - VANILLA;COAL;1
+    - MMOITEMS;MATERIAL;COAL;1
+    - MMOITEMS;MATERIAL;COAL_ORE;1
+    - MMOITEMS;MATERIAL;COAL_BLOCK;1
+
+craft:
+  VANILLA;COAL;1:
+    ingredient:
+      - VANILLA;COAL_ORE;1
+  MMOITEMS;MATERIAL;COAL;1:
+    ingredient:
+      - VANILLA;COAL;64
+  MMOITEMS;MATERIAL;COAL_ORE;1:
+    ingredient:
+      - MMOITEMS;MATERIAL;COAL;64
+  MMOITEMS;MATERIAL;COAL_BLOCK;1:
+    ingredient:
+      - MMOITEMS;MATERIAL;COAL_ORE;64

@@ -1,0 +1,16 @@
+name: StackCraft
+version: '${project.version}'
+main: net.danh.stackcraft.StackCraft
+api-version: '1.13'
+authors: [ VoChiDanh ]
+depend:
+  - MMOItems
+  - MythicLib
+commands:
+  stc:
+    description: StackCraft CMD
+permissions:
+  stc.admin:
+    description: Admin Permission
+  stc.toggle:
+    description: Toggle Command Permission
