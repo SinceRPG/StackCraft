@@ -66,13 +66,20 @@ public class Items {
 
     public static boolean checkCraftIngredient(Player p, List<String> ingredientsString) {
         HashMap<ItemStack, Integer> ingredients = Items.getIngredients(ingredientsString);
+        HashMap<ItemStack, Boolean> ingredientsCheck = new HashMap<>();
         AtomicBoolean checkIngredients = new AtomicBoolean(false);
         for (ItemStack itemStack : ingredients.keySet()) {
             int craftAmount = ingredients.get(itemStack);
             int playerAmount = getPlayerAmount(p, itemStack);
             if (playerAmount >= craftAmount) {
-                checkIngredients.set(removeItems(p, itemStack, craftAmount));
+                ingredientsCheck.put(itemStack, true);
             }
+        }
+        if (!ingredientsCheck.containsValue(false)) {
+            checkIngredients.set(true);
+            ingredientsCheck.keySet().forEach(itemStack -> {
+                removeItems(p, itemStack, ingredients.get(itemStack));
+            });
         }
         return checkIngredients.get();
     }
