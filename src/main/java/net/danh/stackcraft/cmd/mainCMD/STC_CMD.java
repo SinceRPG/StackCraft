@@ -36,15 +36,13 @@ public class STC_CMD extends CMDBase {
                         new SmallToggle(id, item_list).addCommand();
                         Items.toggle_craft.put(item_list, item_list);
                         Items.full_toggle_craft.put(id, item_list);
-                        Items.toggle_craft.forEach((s, s2) -> {
-                            Bukkit.getOnlinePlayers().forEach(p -> {
-                                if (!Items.per_toggle_craft.containsKey(p.getName() + "_" + s)) {
-                                    Items.per_toggle_craft.put(p.getName() + "_" + s, false);
-                                } else {
-                                    Items.per_toggle_craft.replace(p.getName() + "_" + s, false);
-                                }
-                            });
-                        });
+                        Items.toggle_craft.forEach((s, s2) -> Bukkit.getOnlinePlayers().forEach(p -> {
+                            if (!Items.per_toggle_craft.containsKey(p.getName() + "_" + s)) {
+                                Items.per_toggle_craft.put(p.getName() + "_" + s, Files.getConfig().getBoolean("default_toggle_item.per", false));
+                            } else {
+                                Items.per_toggle_craft.replace(p.getName() + "_" + s, Files.getConfig().getBoolean("default_toggle_item.per", false));
+                            }
+                        }));
                     }
                     Chat.sendMessage(c, Files.getMessage().getString("admin.reload_files"));
                 }
