@@ -6,7 +6,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 public class Files {
 
     public static void loadFiles() {
-        SimpleConfigurationManager.get().build("", false, "config.yml", "message.yml");
+        SimpleConfigurationManager.get().build("", false, "config.yml", "message.yml", "playerData/example_data.yml");
     }
 
     public static void saveFiles() {

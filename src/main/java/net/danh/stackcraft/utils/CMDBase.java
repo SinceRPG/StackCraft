@@ -1,4 +1,4 @@
-package net.danh.stackcraft.cmd;
+package net.danh.stackcraft.utils;
 
 import net.danh.stackcraft.StackCraft;
 import org.bukkit.command.*;

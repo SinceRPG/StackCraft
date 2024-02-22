@@ -2,6 +2,7 @@ admin:
   reload_files: "<aqua>Reloaded Files!"
 user:
   toggle: "<gray>AutoCraft Status: #status#"
+  per_item: "<gray>#item# Status: #status#"
   permission: "<red>You don't have permission to do this <yellow>(stc.toggle)"
   status:
     status_on: "<green>On</green>"

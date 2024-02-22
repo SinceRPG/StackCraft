@@ -2,12 +2,20 @@ settings:
   debug: false
   prefix: "<white>[ <yellow>STC</yellow> ]"
 
-toggle_items:
-  MMOITEMS;MATERIAL;COAL_CRAFT:
-    - VANILLA;COAL;1
-    - MMOITEMS;MATERIAL;COAL;1
-    - MMOITEMS;MATERIAL;COAL_ORE;1
-    - MMOITEMS;MATERIAL;COAL_BLOCK;1
+default_toggle_item:
+  all: false
+  per: false
+
+toggle:
+  coal:
+    display: "<gray>AutoCraft Coal"
+    register_command: coalcrafttoggle
+    item: MMOITEMS;MATERIAL;COAL_CRAFT
+    contain:
+      - VANILLA;COAL;1
+      - MMOITEMS;MATERIAL;COAL;1
+      - MMOITEMS;MATERIAL;COAL_ORE;1
+      - MMOITEMS;MATERIAL;COAL_BLOCK;1
 
 craft:
   VANILLA;COAL;1:

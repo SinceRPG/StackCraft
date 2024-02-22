@@ -1,5 +1,6 @@
 package net.danh.stackcraft.events;
 
+import net.danh.stackcraft.resources.Chat;
 import net.danh.stackcraft.resources.Files;
 import net.danh.stackcraft.utils.Items;
 import org.bukkit.entity.Player;
@@ -12,14 +13,23 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BlockBreak implements Listener {
 
     @EventHandler
     public void onBreak(@NotNull BlockBreakEvent e) {
         Player p = e.getPlayer();
+        AtomicBoolean perToggleCraft = new AtomicBoolean(false);
         for (String item_Craft : Objects.requireNonNull(Files.getConfig().getConfigurationSection("craft")).getKeys(false)) {
-            if (Items.toggle.getOrDefault(p, false) || Items.checkToggleItem(p, item_Craft)) {
+            Items.toggle_craft.forEach((s, s2) -> {
+                if (Items.per_toggle_craft.getOrDefault(p.getName() + "_" + s, false)) {
+                    List<String> listCrafting = Files.getConfig().getStringList("toggle." + s + ".contain");
+                    perToggleCraft.set(listCrafting.contains(item_Craft));
+                }
+            });
+            if (Items.toggle.getOrDefault(p, false) || Items.checkToggleItem(p, item_Craft) || perToggleCraft.get()) {
+                Chat.debug(Items.toggle.getOrDefault(p, false) + "_" + Items.checkToggleItem(p, item_Craft) + "_" + perToggleCraft.get());
                 List<String> ingredient = Files.getConfig().getStringList("craft." + item_Craft + ".ingredient");
                 HashMap<ItemStack, Integer> ingredients = Items.getIngredients(ingredient);
                 ingredients.forEach((itemStack, integer) -> {

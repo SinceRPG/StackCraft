@@ -18,6 +18,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Items {
 
     public static HashMap<Player, Boolean> toggle = new HashMap<>();
+    public static HashMap<String, String> toggle_craft = new HashMap<>();
+    public static HashMap<String, String> full_toggle_craft = new HashMap<>();
+    public static HashMap<String, Boolean> per_toggle_craft = new HashMap<>();
 
     public static String getStatus(Player p) {
         if (toggle.get(p)) {
@@ -25,11 +28,17 @@ public class Items {
         } else return Files.getMessage().getString("user.status.status_off");
     }
 
+    public static String getPerStatus(Player p, String item) {
+        if (Items.per_toggle_craft.get(p.getName() + "_" + item)) {
+            return Files.getMessage().getString("user.status.status_on");
+        } else return Files.getMessage().getString("user.status.status_off");
+    }
+
     public static boolean checkToggleItem(Player p, String itemCraft) {
         AtomicBoolean checkToggle = new AtomicBoolean(false);
-        for (String toggle_item : Objects.requireNonNull(Files.getConfig().getConfigurationSection("toggle_items")).getKeys(false)) {
-            List<String> itemCraftList = Files.getConfig().getStringList("toggle_items." + toggle_item);
-            String[] toggleItemSplit = toggle_item.split(";");
+        for (String toggle_item : Objects.requireNonNull(Files.getConfig().getConfigurationSection("toggle")).getKeys(false)) {
+            List<String> itemCraftList = Files.getConfig().getStringList("toggle." + toggle_item + ".contain");
+            String[] toggleItemSplit = Objects.requireNonNull(Files.getConfig().getString("toggle." + toggle_item + ".item")).split(";");
             if (toggleItemSplit[0].equalsIgnoreCase("MMOITEMS")) {
                 ItemStack itemStack = MMOItems.plugin.getItem(toggleItemSplit[1], toggleItemSplit[2]);
                 if (itemStack != null) {
