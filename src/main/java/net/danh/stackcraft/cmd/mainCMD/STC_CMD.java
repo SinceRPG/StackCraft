@@ -28,9 +28,9 @@ public class STC_CMD extends CMDBase {
                     Files.reloadFiles();
                     for (String id : Items.full_toggle_craft.keySet()) {
                         new SmallToggle(id, Items.full_toggle_craft.get(id)).removeCommand();
-                        Items.full_toggle_craft.remove(id);
-                        Items.toggle_craft.remove(id);
                     }
+                    Items.full_toggle_craft.clear();
+                    Items.toggle_craft.clear();
                     for (String item_list : Objects.requireNonNull(Files.getConfig().getConfigurationSection("toggle")).getKeys(false)) {
                         String id = Files.getConfig().getString("toggle." + item_list + ".register_command");
                         new SmallToggle(id, item_list).addCommand();
