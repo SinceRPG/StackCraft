@@ -10,7 +10,6 @@ softdepend:
   - Oraxen
   - ExecutableItems
   - SCore
-  - ItemEdit
 commands:
   stc:
     description: StackCraft CMD
