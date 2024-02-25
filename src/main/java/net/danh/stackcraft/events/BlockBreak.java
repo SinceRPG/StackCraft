@@ -1,5 +1,6 @@
 package net.danh.stackcraft.events;
 
+import net.danh.stackcraft.api.SCAPI;
 import net.danh.stackcraft.resources.Chat;
 import net.danh.stackcraft.resources.Files;
 import net.danh.stackcraft.utils.Items;
@@ -17,20 +18,28 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BlockBreak implements Listener {
 
+    private boolean checkToggleItems(Player p, String itemCraft) {
+        return Items.checkToggleItem(p, itemCraft) && SCAPI.isPremium();
+    }
+
+    private boolean perToggleCraft(boolean perToggleCraft) {
+        return perToggleCraft && SCAPI.isPremium();
+    }
+
     @EventHandler
     public void onBreak(@NotNull BlockBreakEvent e) {
         Player p = e.getPlayer();
         AtomicBoolean perToggleCraft = new AtomicBoolean(false);
-        for (String item_Craft : Objects.requireNonNull(Files.getConfig().getConfigurationSection("craft")).getKeys(false)) {
+        for (String itemCraft : Objects.requireNonNull(Files.getConfig().getConfigurationSection("craft")).getKeys(false)) {
             Items.toggle_craft.forEach((s, s2) -> {
                 if (Items.per_toggle_craft.getOrDefault(p.getName() + "_" + s, false)) {
                     List<String> listCrafting = Files.getConfig().getStringList("toggle." + s + ".contain");
-                    perToggleCraft.set(listCrafting.contains(item_Craft));
+                    perToggleCraft.set(listCrafting.contains(itemCraft));
                 }
             });
-            if (Items.toggle.getOrDefault(p, false) || Items.checkToggleItem(p, item_Craft) || perToggleCraft.get()) {
-                Chat.debug(Items.toggle.getOrDefault(p, false) + "_" + Items.checkToggleItem(p, item_Craft) + "_" + perToggleCraft.get());
-                List<String> ingredient = Files.getConfig().getStringList("craft." + item_Craft + ".ingredient");
+            if (Items.toggle.getOrDefault(p, false) || checkToggleItems(p, itemCraft) || perToggleCraft(perToggleCraft.get())) {
+                Chat.debug(Items.toggle.getOrDefault(p, false) + "_" + Items.checkToggleItem(p, itemCraft) + "_" + perToggleCraft.get());
+                List<String> ingredient = Files.getConfig().getStringList("craft." + itemCraft + ".ingredient");
                 HashMap<ItemStack, Integer> ingredients = Items.getIngredients(ingredient);
                 ingredients.forEach((itemStack, integer) -> {
                     int craftAmount = ingredients.get(itemStack);
@@ -38,7 +47,7 @@ public class BlockBreak implements Listener {
                     if (playerAmount >= craftAmount) {
                         for (int i = 1; i <= playerAmount / craftAmount; i++) {
                             if (Items.checkCraftIngredient(p, ingredient)) {
-                                p.getInventory().addItem(Items.generateItem(item_Craft));
+                                p.getInventory().addItem(Items.generateItem(itemCraft));
                             }
                         }
                     }

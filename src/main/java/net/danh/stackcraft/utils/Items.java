@@ -1,6 +1,7 @@
 package net.danh.stackcraft.utils;
 
 import net.Indyuce.mmoitems.MMOItems;
+import net.danh.stackcraft.StackCraft;
 import net.danh.stackcraft.resources.Files;
 import net.danh.stackcraft.resources.Number;
 import org.bukkit.Material;
@@ -39,7 +40,7 @@ public class Items {
         for (String toggle_item : Objects.requireNonNull(Files.getConfig().getConfigurationSection("toggle")).getKeys(false)) {
             List<String> itemCraftList = Files.getConfig().getStringList("toggle." + toggle_item + ".contain");
             String[] toggleItemSplit = Objects.requireNonNull(Files.getConfig().getString("toggle." + toggle_item + ".item")).split(";");
-            if (toggleItemSplit[0].equalsIgnoreCase("MMOITEMS")) {
+            if (StackCraft.isIsMMOItemsInstalled() && toggleItemSplit[0].equalsIgnoreCase("MMOITEMS")) {
                 ItemStack itemStack = MMOItems.plugin.getItem(toggleItemSplit[1], toggleItemSplit[2]);
                 if (itemStack != null) {
                     if (getPlayerAmount(p, itemStack) >= 1) {
@@ -59,7 +60,7 @@ public class Items {
                 int amount = Number.getInteger(itemCraft.split(";")[2]);
                 itemStack = new ItemStack(material, amount);
             }
-        } else if (itemCraft.split(";")[0].equalsIgnoreCase("MMOITEMS")) {
+        } else if (StackCraft.isIsMMOItemsInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("MMOITEMS")) {
             String type = itemCraft.split(";")[1];
             String id = itemCraft.split(";")[2];
             String amount = itemCraft.split(";")[3];
@@ -105,7 +106,7 @@ public class Items {
                         ItemStack itemStack = new ItemStack(material);
                         itemStacks.put(itemStack, amount);
                     }
-                } else if (strings[0].equalsIgnoreCase("MMOITEMS")) {
+                } else if (StackCraft.isIsMMOItemsInstalled() && strings[0].equalsIgnoreCase("MMOITEMS")) {
                     String type = strings[1];
                     String id = strings[2];
                     String amount = strings[3];

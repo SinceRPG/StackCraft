@@ -3,7 +3,7 @@ version: '${project.version}'
 main: net.danh.stackcraft.StackCraft
 api-version: '1.13'
 authors: [ VoChiDanh ]
-depend:
+softdepend:
   - MMOItems
   - MythicLib
 commands:

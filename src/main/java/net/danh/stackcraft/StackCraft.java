@@ -1,5 +1,6 @@
 package net.danh.stackcraft;
 
+import net.danh.stackcraft.api.SCAPI;
 import net.danh.stackcraft.cmd.mainCMD.STC_CMD;
 import net.danh.stackcraft.cmd.smallCMD.SmallToggle;
 import net.danh.stackcraft.events.BlockBreak;
@@ -15,12 +16,18 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.logging.Level;
 
 public final class StackCraft extends JavaPlugin {
     private static StackCraft stackCraft;
+    private static boolean isMMOItemsInstalled = false;
 
     public static StackCraft getStackCraft() {
         return stackCraft;
+    }
+
+    public static boolean isIsMMOItemsInstalled() {
+        return isMMOItemsInstalled;
     }
 
     @Override
@@ -30,6 +37,10 @@ public final class StackCraft extends JavaPlugin {
         Files.loadFiles();
         registerEvents(new BlockBreak(), new JoinQuit(), new CommandPreprocess());
         new STC_CMD();
+        if (SCAPI.isPremium() && getServer().getPluginManager().getPlugin("MMOItems") != null) {
+            isMMOItemsInstalled = true;
+            getLogger().log(Level.INFO, "Compatible with MMOItems");
+        }
         for (String item_list : Objects.requireNonNull(Files.getConfig().getConfigurationSection("toggle")).getKeys(false)) {
             String id = Files.getConfig().getString("toggle." + item_list + ".command.alias");
             boolean register = Files.getConfig().getBoolean("toggle." + item_list + ".command.register");
@@ -38,6 +49,12 @@ public final class StackCraft extends JavaPlugin {
             }
             Items.toggle_craft.put(item_list, item_list);
             Items.full_toggle_craft.put(id, item_list);
+        }
+        if (!SCAPI.isPremium()) {
+            getLogger().log(Level.INFO, "You are using the non-premium version so you cannot use some features such as:");
+            getLogger().log(Level.INFO, "- Being able to craft custom items");
+            getLogger().log(Level.INFO, "- Being able to toggle on/off craft per item");
+            getLogger().log(Level.INFO, "- Being able to toggle autocraft by put item toggle craft in inventory");
         }
     }
 
