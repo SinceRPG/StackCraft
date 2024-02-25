@@ -78,8 +78,8 @@ public final class StackCraft extends JavaPlugin {
             Items.full_toggle_craft.put(id, item_list);
         }
         if (!SCAPI.isPremium()) {
-            getLogger().log(Level.INFO, "You are using the non-premium version so you cannot use some features such as:");
-            getLogger().log(Level.INFO, "- Being able to craft custom items");
+            getLogger().log(Level.INFO, "You are using the non-premium version so you CANNOT use some features such as:");
+            getLogger().log(Level.INFO, "- Being able to craft custom items (MMOItems, ItemsAdder, Oraxen, ExecutableItems");
             getLogger().log(Level.INFO, "- Being able to toggle on/off craft per item");
             getLogger().log(Level.INFO, "- Being able to toggle autocraft by put item toggle craft in inventory");
         }
