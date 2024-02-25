@@ -40,14 +40,14 @@ public class BlockBreak implements Listener {
             if (Items.toggle.getOrDefault(p, false) || checkToggleItems(p, itemCraft) || perToggleCraft(perToggleCraft.get())) {
                 Chat.debug(Items.toggle.getOrDefault(p, false) + "_" + Items.checkToggleItem(p, itemCraft) + "_" + perToggleCraft.get());
                 List<String> ingredient = Files.getConfig().getStringList("craft." + itemCraft + ".ingredient");
-                HashMap<ItemStack, Integer> ingredients = Items.getIngredients(ingredient);
+                HashMap<ItemStack, Integer> ingredients = Items.getIngredients(p, ingredient);
                 ingredients.forEach((itemStack, integer) -> {
                     int craftAmount = ingredients.get(itemStack);
                     int playerAmount = Items.getPlayerAmount(p, itemStack);
                     if (playerAmount >= craftAmount) {
                         for (int i = 1; i <= playerAmount / craftAmount; i++) {
                             if (Items.checkCraftIngredient(p, ingredient)) {
-                                p.getInventory().addItem(Items.generateItem(itemCraft));
+                                p.getInventory().addItem(Items.generateItem(p, itemCraft));
                             }
                         }
                     }

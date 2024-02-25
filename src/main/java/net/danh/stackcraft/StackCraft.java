@@ -21,6 +21,9 @@ import java.util.logging.Level;
 public final class StackCraft extends JavaPlugin {
     private static StackCraft stackCraft;
     private static boolean isMMOItemsInstalled = false;
+    private static boolean isItemsAdderInstalled = false;
+    private static boolean isOraxenInstalled = false;
+    private static boolean isExecutableItemsInstalled = false;
 
     public static StackCraft getStackCraft() {
         return stackCraft;
@@ -28,6 +31,18 @@ public final class StackCraft extends JavaPlugin {
 
     public static boolean isIsMMOItemsInstalled() {
         return isMMOItemsInstalled;
+    }
+
+    public static boolean isIsItemsAdderInstalled() {
+        return isItemsAdderInstalled;
+    }
+
+    public static boolean isIsOraxenInstalled() {
+        return isOraxenInstalled;
+    }
+
+    public static boolean isIsExecutableItemsInstalled() {
+        return isExecutableItemsInstalled;
     }
 
     @Override
@@ -40,6 +55,18 @@ public final class StackCraft extends JavaPlugin {
         if (SCAPI.isPremium() && getServer().getPluginManager().getPlugin("MMOItems") != null) {
             isMMOItemsInstalled = true;
             getLogger().log(Level.INFO, "Compatible with MMOItems");
+        }
+        if (SCAPI.isPremium() && getServer().getPluginManager().getPlugin("ItemsAdder") != null) {
+            isItemsAdderInstalled = true;
+            getLogger().log(Level.INFO, "Compatible with ItemsAdder");
+        }
+        if (SCAPI.isPremium() && getServer().getPluginManager().getPlugin("Oraxen") != null) {
+            isOraxenInstalled = true;
+            getLogger().log(Level.INFO, "Compatible with Oraxen");
+        }
+        if (SCAPI.isPremium() && getServer().getPluginManager().getPlugin("ExecutableItems") != null) {
+            isExecutableItemsInstalled = true;
+            getLogger().log(Level.INFO, "Compatible with ExecutableItems");
         }
         for (String item_list : Objects.requireNonNull(Files.getConfig().getConfigurationSection("toggle")).getKeys(false)) {
             String id = Files.getConfig().getString("toggle." + item_list + ".command.alias");

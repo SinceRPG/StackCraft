@@ -6,6 +6,10 @@ authors: [ VoChiDanh ]
 softdepend:
   - MMOItems
   - MythicLib
+  - ItemsAdder
+  - Oraxen
+  - ExecutableItems
+  - SCore
 commands:
   stc:
     description: StackCraft CMD

@@ -73,6 +73,10 @@
 			<url>https://oss.sonatype.org/content/groups/public/</url>
 		</repository>
 		<repository>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+		</repository>
+		<repository>
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
 		</repository>
@@ -104,8 +108,22 @@
 		<dependency>
 			<groupId>com.github.LoneDev6</groupId>
 			<artifactId>api-itemsadder</artifactId>
-			<version>3.6.1</version>
+			<version>3.6.2-beta-r3-b</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.th0rgal</groupId>
+			<artifactId>oraxen</artifactId>
+			<version>1.169.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/libs/oraxen-1.169.0-dev-all.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>com.ssomar.score</groupId>
+			<artifactId>SCore</artifactId>
+			<version>4.24.2.21</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/libs/SCore-4.24.2.21.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>net.kyori</groupId>
