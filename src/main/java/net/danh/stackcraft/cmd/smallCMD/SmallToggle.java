@@ -28,7 +28,7 @@ public class SmallToggle extends SmallCommands {
             if (c.hasPermission("stc.toggle." + item)) {
                 Items.per_toggle_craft.replace(p.getName() + "_" + item, !Items.per_toggle_craft.get(p.getName() + "_" + item));
                 p.sendMessage(Chat.colorize(Objects.requireNonNull(Files.getMessage().getString("user.per_item"))
-                        .replace("#status#", Items.getPerStatus(p, item))
+                        .replace("#status#", Items.getStatus(p, item))
                         .replace("#item#", Objects.requireNonNull(Files.getConfig().getString("toggle." + item + ".display")))));
             }
         }

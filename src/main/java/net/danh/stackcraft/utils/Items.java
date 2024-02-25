@@ -22,16 +22,16 @@ public class Items {
     public static HashMap<String, String> full_toggle_craft = new HashMap<>();
     public static HashMap<String, Boolean> per_toggle_craft = new HashMap<>();
 
-    public static String getStatus(Player p) {
-        if (toggle.get(p)) {
-            return Files.getMessage().getString("user.status.status_on");
-        } else return Files.getMessage().getString("user.status.status_off");
-    }
-
-    public static String getPerStatus(Player p, String item) {
-        if (Items.per_toggle_craft.get(p.getName() + "_" + item)) {
-            return Files.getMessage().getString("user.status.status_on");
-        } else return Files.getMessage().getString("user.status.status_off");
+    public static String getStatus(Player p, String item) {
+        if (item == null) {
+            if (toggle.get(p)) {
+                return Files.getMessage().getString("user.status.status_on");
+            } else return Files.getMessage().getString("user.status.status_off");
+        } else {
+            if (Items.per_toggle_craft.get(p.getName() + "_" + item)) {
+                return Files.getMessage().getString("user.status.status_on");
+            } else return Files.getMessage().getString("user.status.status_off");
+        }
     }
 
     public static boolean checkToggleItem(Player p, String itemCraft) {

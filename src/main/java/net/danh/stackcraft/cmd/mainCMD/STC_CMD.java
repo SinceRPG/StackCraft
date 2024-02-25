@@ -55,7 +55,7 @@ public class STC_CMD extends CMDBase {
                         for (String item : Objects.requireNonNull(Files.getConfig().getConfigurationSection("toggle")).getKeys(false)) {
                             Items.per_toggle_craft.replace(p.getName() + "_" + item, Items.toggle.get(p));
                         }
-                        p.sendMessage(Chat.colorize(Objects.requireNonNull(Files.getMessage().getString("user.toggle")).replace("#status#", Items.getStatus(p))));
+                        p.sendMessage(Chat.colorize(Objects.requireNonNull(Files.getMessage().getString("user.toggle")).replace("#status#", Items.getStatus(p, null))));
                     }
                 }
             } else {
