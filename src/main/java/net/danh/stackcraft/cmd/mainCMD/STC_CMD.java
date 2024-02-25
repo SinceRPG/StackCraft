@@ -32,8 +32,11 @@ public class STC_CMD extends CMDBase {
                     Items.full_toggle_craft.clear();
                     Items.toggle_craft.clear();
                     for (String item_list : Objects.requireNonNull(Files.getConfig().getConfigurationSection("toggle")).getKeys(false)) {
-                        String id = Files.getConfig().getString("toggle." + item_list + ".register_command");
-                        new SmallToggle(id, item_list).addCommand();
+                        String id = Files.getConfig().getString("toggle." + item_list + ".command.alias");
+                        boolean register = Files.getConfig().getBoolean("toggle." + item_list + ".command.register");
+                        if (register) {
+                            new SmallToggle(id, item_list).addCommand();
+                        }
                         Items.toggle_craft.put(item_list, item_list);
                         Items.full_toggle_craft.put(id, item_list);
                         Items.toggle_craft.forEach((s, s2) -> Bukkit.getOnlinePlayers().forEach(p -> {

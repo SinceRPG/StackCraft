@@ -9,7 +9,9 @@ default_toggle_item:
 toggle:
   coal:
     display: "<gray>AutoCraft Coal"
-    register_command: coalcrafttoggle
+    command:
+      register: true
+      alias: coalcrafttoggle
     item: MMOITEMS;MATERIAL;COAL_CRAFT
     contain:
       - VANILLA;COAL;1

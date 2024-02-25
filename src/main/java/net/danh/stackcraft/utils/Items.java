@@ -21,6 +21,7 @@ public class Items {
     public static HashMap<String, String> toggle_craft = new HashMap<>();
     public static HashMap<String, String> full_toggle_craft = new HashMap<>();
     public static HashMap<String, Boolean> per_toggle_craft = new HashMap<>();
+    public static HashMap<String, Boolean> small_register_cmd = new HashMap<>();
 
     public static String getStatus(Player p, String item) {
         if (item == null) {
