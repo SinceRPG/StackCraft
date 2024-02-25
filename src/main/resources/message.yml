@@ -1,5 +1,7 @@
 admin:
   reload_files: "<aqua>Reloaded Files!"
+  help:
+    - "<yellow>/stc reload - reload files"
 user:
   toggle: "<gray>AutoCraft Status: #status#"
   per_item: "<gray>#item# Status: #status#"
@@ -7,3 +9,5 @@ user:
   status:
     status_on: "<green>On</green>"
     status_off: "<red>Off</red>"
+  help:
+    - "<yellow>/stc toggle - Toggle auto crafting - stc.toggle"

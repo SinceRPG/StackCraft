@@ -23,6 +23,13 @@ public class STC_CMD extends CMDBase {
     @Override
     public void execute(CommandSender c, String[] args) {
         if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("help")) {
+                if (c.hasPermission("stc.admin")) {
+                    Chat.sendMessage(c, Files.getMessage().getStringList("admin.help"));
+                }
+
+                Chat.sendMessage(c, Files.getMessage().getStringList("user.help"));
+            }
             if (c.hasPermission("stc.admin")) {
                 if (args[0].equalsIgnoreCase("reload")) {
                     Files.reloadFiles();
