@@ -73,7 +73,7 @@ public class Items {
                         }
                     }
                 }
-            } else if (StackCraft.isIsExecutableItemsInstalled() && toggleItemSplit[0].equalsIgnoreCase("EXECUTABLEITEMS")) {
+            } else if (StackCraft.isExecutableItemsInstalled() && toggleItemSplit[0].equalsIgnoreCase("EXECUTABLEITEMS")) {
                 if (ExecutableItemsAPI.getExecutableItemsManager().isValidID(toggleItemSplit[1])) {
                     Optional<ExecutableItemInterface> stack = ExecutableItemsAPI.getExecutableItemsManager().getExecutableItem(toggleItemSplit[1]);
                     if (stack.isPresent()) {

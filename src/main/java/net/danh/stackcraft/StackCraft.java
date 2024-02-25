@@ -41,7 +41,7 @@ public final class StackCraft extends JavaPlugin {
         return isOraxenInstalled;
     }
 
-    public static boolean isIsExecutableItemsInstalled() {
+    public static boolean isExecutableItemsInstalled() {
         return isExecutableItemsInstalled;
     }
 
