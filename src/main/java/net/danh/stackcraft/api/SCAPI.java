@@ -2,7 +2,7 @@ package net.danh.stackcraft.api;
 
 public class SCAPI {
 
-    private static final boolean premium = true;
+    private static final boolean premium = false;
 
 
     public static boolean isPremium() {
