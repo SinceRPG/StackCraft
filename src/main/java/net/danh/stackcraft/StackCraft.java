@@ -24,6 +24,7 @@ public final class StackCraft extends JavaPlugin {
     private static boolean isItemsAdderInstalled = false;
     private static boolean isOraxenInstalled = false;
     private static boolean isExecutableItemsInstalled = false;
+    private static boolean isMythicInstalled = false;
 
     public static StackCraft getStackCraft() {
         return stackCraft;
@@ -43,6 +44,10 @@ public final class StackCraft extends JavaPlugin {
 
     public static boolean isExecutableItemsInstalled() {
         return isExecutableItemsInstalled;
+    }
+
+    public static boolean isIsMythicInstalled() {
+        return isMythicInstalled;
     }
 
     @Override
@@ -67,6 +72,10 @@ public final class StackCraft extends JavaPlugin {
         if (SCAPI.isPremium() && getServer().getPluginManager().getPlugin("ExecutableItems") != null) {
             isExecutableItemsInstalled = true;
             getLogger().log(Level.INFO, "Compatible with ExecutableItems");
+        }
+        if (SCAPI.isPremium() && getServer().getPluginManager().getPlugin("MythicMobs") != null) {
+            isMythicInstalled = true;
+            getLogger().log(Level.INFO, "Compatible with MythicMobs");
         }
         for (String item_list : Objects.requireNonNull(Files.getConfig().getConfigurationSection("toggle")).getKeys(false)) {
             String id = Files.getConfig().getString("toggle." + item_list + ".command.alias");

@@ -25,6 +25,7 @@ craft:
   # Oraxen: ORAXEN;CUSTOM_ID;AMOUNT
   # MMOItems: MMOITEMS;TYPE;ID;AMOUNT
   # ExecutableItems: EXECUTABLEITEMS;ID;AMOUNT
+  # MythicMobs: MYTHICMOBS;ID;AMOUNT
   # Vanilla: VANILLA;TYPE;AMOUNT
   VANILLA;COAL;1:
     ingredient:

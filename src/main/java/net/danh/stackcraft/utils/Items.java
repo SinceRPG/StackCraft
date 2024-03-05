@@ -3,6 +3,8 @@ package net.danh.stackcraft.utils;
 import com.ssomar.score.api.executableitems.ExecutableItemsAPI;
 import com.ssomar.score.api.executableitems.config.ExecutableItemInterface;
 import dev.lone.itemsadder.api.CustomStack;
+import io.lumine.mythic.bukkit.MythicBukkit;
+import io.lumine.mythic.core.items.MythicItem;
 import io.th0rgal.oraxen.api.OraxenItems;
 import io.th0rgal.oraxen.items.ItemBuilder;
 import net.Indyuce.mmoitems.MMOItems;
@@ -83,6 +85,14 @@ public class Items {
                         }
                     }
                 }
+            } else if (StackCraft.isIsMythicInstalled() && toggleItemSplit[0].equalsIgnoreCase("MYTHICMOBS")) {
+                Optional<MythicItem> stack = MythicBukkit.inst().getItemManager().getItem(toggleItemSplit[1]);
+                stack.ifPresent(mythicItem -> {
+                    ItemStack itemStack = mythicItem.getCachedBaseItem();
+                    if (getPlayerAmount(p, itemStack) >= 1) {
+                        checkToggle.set(itemCraftList.contains(itemCraft));
+                    }
+                });
             }
         }
         return checkToggle.get();
@@ -125,7 +135,7 @@ public class Items {
                     itemStack.setAmount(Number.getInteger(amount));
                 }
             }
-        } else if (StackCraft.isIsOraxenInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("EXECUTABLEITEMS")) {
+        } else if (StackCraft.isExecutableItemsInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("EXECUTABLEITEMS")) {
             String id = itemCraft.split(";")[1];
             String amount = itemCraft.split(";")[2];
             if (ExecutableItemsAPI.getExecutableItemsManager().isValidID(id)) {
@@ -133,6 +143,13 @@ public class Items {
                 if (stack.isPresent()) {
                     itemStack = stack.get().buildItem(Number.getInteger(amount), Optional.of(p));
                 }
+            }
+        } else if (StackCraft.isIsMythicInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("MYTHICMOBS")) {
+            String id = itemCraft.split(";")[1];
+            String amount = itemCraft.split(";")[2];
+            Optional<MythicItem> stack = MythicBukkit.inst().getItemManager().getItem(id);
+            if (stack.isPresent()) {
+                itemStack = stack.get().getCachedBaseItem().add(Number.getInteger(amount));
             }
         }
         return itemStack;
@@ -194,13 +211,18 @@ public class Items {
                             itemStacks.put(stack.build(), Number.getInteger(amount));
                         }
                     }
-                } else if (StackCraft.isIsOraxenInstalled() && strings[0].equalsIgnoreCase("EXECUTABLEITEMS")) {
+                } else if (StackCraft.isExecutableItemsInstalled() && strings[0].equalsIgnoreCase("EXECUTABLEITEMS")) {
                     String id = strings[1];
                     String amount = strings[2];
                     if (ExecutableItemsAPI.getExecutableItemsManager().isValidID(id)) {
                         Optional<ExecutableItemInterface> stack = ExecutableItemsAPI.getExecutableItemsManager().getExecutableItem(id);
                         stack.ifPresent(executableItemInterface -> itemStacks.put(executableItemInterface.buildItem(1, Optional.of(p)), Number.getInteger(amount)));
                     }
+                } else if (StackCraft.isIsMythicInstalled() && strings[0].equalsIgnoreCase("MYTHICMOBS")) {
+                    String id = strings[1];
+                    String amount = strings[2];
+                    Optional<MythicItem> stack = MythicBukkit.inst().getItemManager().getItem(id);
+                    stack.ifPresent(mythicItem -> itemStacks.put(mythicItem.getCachedBaseItem().add(1), Number.getInteger(amount)));
                 }
             }
         });

@@ -10,6 +10,7 @@ softdepend:
   - Oraxen
   - ExecutableItems
   - SCore
+  - MythicMobs
 commands:
   stc:
     description: StackCraft CMD
