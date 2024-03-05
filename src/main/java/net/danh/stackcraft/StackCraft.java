@@ -57,7 +57,7 @@ public final class StackCraft extends JavaPlugin {
         Files.loadFiles();
         registerEvents(new BlockBreak(), new JoinQuit(), new CommandPreprocess());
         new STC_CMD();
-        if (SCAPI.isPremium() && getServer().getPluginManager().getPlugin("MMOItems") != null) {
+        if (getServer().getPluginManager().getPlugin("MMOItems") != null) {
             isMMOItemsInstalled = true;
             getLogger().log(Level.INFO, "Compatible with MMOItems");
         }
