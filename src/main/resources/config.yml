@@ -28,11 +28,17 @@ craft:
   # MythicMobs: MYTHICMOBS;ID;AMOUNT
   # Vanilla: VANILLA;TYPE;AMOUNT
   VANILLA;COAL;1:
+    # When required_all: true, you will need all items below ingredient to craft - default is false
+    required_all: true
     ingredient:
       - VANILLA;COAL_ORE;1 #1 coal_ore -> 1 coal
+      - VANILLA;COAL_BLOCK;1 #1 coal_block -> 1 coal
   MMOITEMS;MATERIAL;COAL;1:
+    # When required_all: true, you will need all items below ingredient to craft - default is false
+    required_all: true
     ingredient:
       - VANILLA;COAL;64 #64 vanilla coal -> 1 mmoitems custom coal
+      - VANILLA;COAL_BLOCK;64 #64 vanilla coal block -> 1 mmoitems custom coal
   MMOITEMS;MATERIAL;COAL_ORE;1:
     ingredient:
       - MMOITEMS;MATERIAL;COAL;64

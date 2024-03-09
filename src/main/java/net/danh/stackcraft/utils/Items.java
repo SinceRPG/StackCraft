@@ -9,6 +9,7 @@ import io.th0rgal.oraxen.api.OraxenItems;
 import io.th0rgal.oraxen.items.ItemBuilder;
 import net.Indyuce.mmoitems.MMOItems;
 import net.danh.stackcraft.StackCraft;
+import net.danh.stackcraft.resources.Chat;
 import net.danh.stackcraft.resources.Files;
 import net.danh.stackcraft.resources.Number;
 import org.bukkit.Material;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Items {
 
@@ -156,20 +158,42 @@ public class Items {
     }
 
 
-    public static boolean checkCraftIngredient(Player p, List<String> ingredientsString) {
+    public static boolean checkCraftIngredient(Player p, List<String> ingredientsString, Boolean requiredAll) {
+        Chat.debug(p.getName() + "_" + ingredientsString + "_" + requiredAll);
         HashMap<ItemStack, Integer> ingredients = Items.getIngredients(p, ingredientsString);
         HashMap<ItemStack, Boolean> ingredientsCheck = new HashMap<>();
         AtomicBoolean checkIngredients = new AtomicBoolean(false);
         for (ItemStack itemStack : ingredients.keySet()) {
             int craftAmount = ingredients.get(itemStack);
             int playerAmount = getPlayerAmount(p, itemStack);
+            Chat.debug(itemStack + "_" + (playerAmount >= craftAmount));
             if (playerAmount >= craftAmount) {
-                ingredientsCheck.put(itemStack, true);
+                if (!requiredAll) {
+                    removeItems(p, itemStack, craftAmount);
+                    checkIngredients.set(true);
+                    return checkIngredients.get();
+                } else
+                    ingredientsCheck.put(itemStack, true);
+            } else {
+                if (requiredAll) ingredientsCheck.put(itemStack, false);
             }
         }
-        if (!ingredientsCheck.containsValue(false)) {
-            checkIngredients.set(true);
-            ingredientsCheck.keySet().forEach(itemStack -> removeItems(p, itemStack, ingredients.get(itemStack)));
+        if (requiredAll) {
+            AtomicInteger numCountIngredients = new AtomicInteger(0);
+            for (ItemStack itemStack : ingredientsCheck.keySet()) {
+                if (ingredientsCheck.get(itemStack)) {
+                    numCountIngredients.addAndGet(1);
+                    Chat.debug(String.valueOf(numCountIngredients.get()));
+                }
+            }
+            Chat.debug(String.valueOf(numCountIngredients.get() == ingredientsCheck.size()));
+            if (numCountIngredients.get() == ingredientsCheck.size()) {
+                for (ItemStack itemStack : ingredientsCheck.keySet()) {
+                    Chat.debug(String.valueOf(itemStack));
+                    removeItems(p, itemStack, ingredients.get(itemStack));
+                }
+                checkIngredients.set(true);
+            }
         }
         return checkIngredients.get();
     }

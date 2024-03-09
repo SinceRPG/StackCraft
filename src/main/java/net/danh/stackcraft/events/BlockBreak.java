@@ -46,7 +46,7 @@ public class BlockBreak implements Listener {
                     int playerAmount = Items.getPlayerAmount(p, itemStack);
                     if (playerAmount >= craftAmount) {
                         for (int i = 1; i <= playerAmount / craftAmount; i++) {
-                            if (Items.checkCraftIngredient(p, ingredient)) {
+                            if (Items.checkCraftIngredient(p, ingredient, Files.getConfig().getBoolean("craft." + itemCraft + ".required_all", false))) {
                                 p.getInventory().addItem(Items.generateItem(p, itemCraft));
                             }
                         }
