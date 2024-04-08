@@ -8,6 +8,7 @@ import net.danh.stackcraft.events.CommandPreprocess;
 import net.danh.stackcraft.events.JoinQuit;
 import net.danh.stackcraft.playerdata.PlayerData;
 import net.danh.stackcraft.resources.Files;
+import net.danh.stackcraft.utils.CraftCheck;
 import net.danh.stackcraft.utils.Items;
 import net.xconfig.bukkit.model.SimpleConfigurationManager;
 import org.bukkit.Bukkit;
@@ -92,6 +93,7 @@ public final class StackCraft extends JavaPlugin {
             getLogger().log(Level.INFO, "- Being able to toggle on/off craft per item");
             getLogger().log(Level.INFO, "- Being able to toggle autocraft by put item toggle craft in inventory");
         }
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(stackCraft, () -> getServer().getOnlinePlayers().forEach(CraftCheck::craftingCheck), 20L, 20L);
     }
 
     @Override
