@@ -1,6 +1,9 @@
 settings:
   debug: false
   prefix: "<white>[ <yellow>STC</yellow> ]"
+  #Disable auto craft active by schedule
+  #At sometimes player needs uncraft item to do sth, so it will be Auto craft again…
+  auto_craft_schedule: false
 
 default_toggle_item:
   all: false
@@ -12,7 +15,7 @@ toggle:
     command: #If you don't want to use command for this, you can delete this
       register: true #If true -> after restart player can tab this command, else still can use command but can't tab
       alias: coalcrafttoggle #command
-    item: MMOITEMS;MATERIAL;COAL_CRAFT #When this item is in player inventory -> Auto crafting is enable
+    item: MMOITEMS;MATERIAL;COAL_CRAFT #When this item is in player inventory -> Auto crafting is enabled
     contain:
       - VANILLA;COAL;1
       - MMOITEMS;MATERIAL;COAL;1

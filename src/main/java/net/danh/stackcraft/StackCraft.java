@@ -93,7 +93,11 @@ public final class StackCraft extends JavaPlugin {
             getLogger().log(Level.INFO, "- Being able to toggle on/off craft per item");
             getLogger().log(Level.INFO, "- Being able to toggle autocraft by put item toggle craft in inventory");
         }
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(stackCraft, () -> getServer().getOnlinePlayers().forEach(CraftCheck::craftingCheck), 20L, 20L);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(stackCraft, () -> {
+            if (Files.getConfig().getBoolean("settings.auto_craft_schedule")) {
+                getServer().getOnlinePlayers().forEach(CraftCheck::craftingCheck);
+            }
+        }, 20L, 20L);
     }
 
     @Override

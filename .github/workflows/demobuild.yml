@@ -1,0 +1,30 @@
+name: DemoBuild
+on:
+  push:
+    branches: [ master ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: jungwinter/split@v2
+        id: split
+        with:
+          msg: ${{github.repository}}
+          separator: "/"
+      - name: Build passsed
+        uses: tsickert/discord-webhook@v5.3.0
+        with:
+          webhook-url: ${{ secrets.DISCORD }}
+          username: "${{ steps.split.outputs._1 }}"
+          avatar-url: "https://github.com/${{ github.actor }}.png"
+          embed-color: "65280"
+          embed-author-name: "${{ github.actor }} pushed an update for ${{ steps.split.outputs._1 }}"
+          embed-author-url: "https://github.com/${{ github.actor }}"
+          embed-author-icon-url: "https://github.com/${{ github.actor }}.png"
+          embed-footer-text: "Build #${{github.run_number}} passed"
+          embed-footer-icon-url: "https://i.imgur.com/D5KVghH.png"
+          embed-description: |
+            ${{ github.event.head_commit.message }}
+            
+            [SpigotMC Premium](https://www.spigotmc.org/resources/115265/)
+            [SpigotMC Free](https://www.spigotmc.org/resources/115435/)
