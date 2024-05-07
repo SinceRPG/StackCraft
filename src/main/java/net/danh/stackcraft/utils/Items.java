@@ -101,6 +101,7 @@ public class Items {
     }
 
     public static ItemStack generateItem(Player p, @NotNull String itemCraft) {
+        Chat.debug("GI: " + itemCraft);
         ItemStack itemStack = null;
         if (itemCraft.split(";")[0].equalsIgnoreCase("VANILLA")) {
             Material material = Material.getMaterial(itemCraft.split(";")[1]);
@@ -113,6 +114,7 @@ public class Items {
             String id = itemCraft.split(";")[2];
             String amount = itemCraft.split(";")[3];
             ItemStack item = MMOItems.plugin.getItem(type, id);
+            Chat.debug("MMOItems GI: " + (item != null));
             if (item != null) {
                 item.setAmount(Number.getInteger(amount));
                 itemStack = item;
@@ -122,6 +124,7 @@ public class Items {
             String amount = itemCraft.split(";")[2];
             if (CustomStack.isInRegistry(id)) {
                 CustomStack stack = CustomStack.getInstance(id);
+                Chat.debug("ItemsAdder GI: " + (stack != null));
                 if (stack != null) {
                     itemStack = stack.getItemStack();
                     itemStack.setAmount(Number.getInteger(amount));
@@ -130,8 +133,10 @@ public class Items {
         } else if (StackCraft.isIsOraxenInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("ORAXEN")) {
             String id = itemCraft.split(";")[1];
             String amount = itemCraft.split(";")[2];
+            Chat.debug("Oraxen GI: " + (OraxenItems.exists(id)));
             if (OraxenItems.exists(id)) {
                 ItemBuilder stack = OraxenItems.getItemById(id);
+                Chat.debug("Oraxen GI: " + (stack != null));
                 if (stack != null) {
                     itemStack = stack.build();
                     itemStack.setAmount(Number.getInteger(amount));
@@ -140,8 +145,10 @@ public class Items {
         } else if (StackCraft.isExecutableItemsInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("EXECUTABLEITEMS")) {
             String id = itemCraft.split(";")[1];
             String amount = itemCraft.split(";")[2];
+            Chat.debug("ExecutableItems GI: " + (ExecutableItemsAPI.getExecutableItemsManager().isValidID(id)));
             if (ExecutableItemsAPI.getExecutableItemsManager().isValidID(id)) {
                 Optional<ExecutableItemInterface> stack = ExecutableItemsAPI.getExecutableItemsManager().getExecutableItem(id);
+                Chat.debug("ExecutableItems GI: " + (stack.isPresent()));
                 if (stack.isPresent()) {
                     itemStack = stack.get().buildItem(Number.getInteger(amount), Optional.of(p));
                 }
@@ -150,6 +157,7 @@ public class Items {
             String id = itemCraft.split(";")[1];
             String amount = itemCraft.split(";")[2];
             Optional<MythicItem> stack = MythicBukkit.inst().getItemManager().getItem(id);
+            Chat.debug("MythicMobs GI: " + (stack.isPresent()));
             if (stack.isPresent()) {
                 itemStack = stack.get().getCachedBaseItem().add(Number.getInteger(amount));
             }
@@ -201,6 +209,7 @@ public class Items {
     public static @NotNull HashMap<ItemStack, Integer> getIngredients(Player p, @NotNull List<String> ingredientsString) {
         HashMap<ItemStack, Integer> itemStacks = new HashMap<>();
         ingredientsString.forEach(ingredientString -> {
+            Chat.debug(ingredientString);
             String[] strings = ingredientString.split(";");
             if (strings.length >= 3) {
                 if (strings[0].equalsIgnoreCase("VANILLA")) {
@@ -214,12 +223,14 @@ public class Items {
                     String type = strings[1];
                     String id = strings[2];
                     String amount = strings[3];
+                    Chat.debug("MMOItems: " + (MMOItems.plugin.getItem(type, id) != null));
                     if (MMOItems.plugin.getItem(type, id) != null) {
                         itemStacks.put(MMOItems.plugin.getItem(type, id), Number.getInteger(amount));
                     }
                 } else if (StackCraft.isIsItemsAdderInstalled() && strings[0].equalsIgnoreCase("ITEMSADDER")) {
                     String id = strings[1];
                     String amount = strings[2];
+                    Chat.debug("ItemAdders: " + (CustomStack.isInRegistry(id)));
                     if (CustomStack.isInRegistry(id)) {
                         CustomStack stack = CustomStack.getInstance(id);
                         if (stack != null) {
@@ -229,6 +240,7 @@ public class Items {
                 } else if (StackCraft.isIsOraxenInstalled() && strings[0].equalsIgnoreCase("ORAXEN")) {
                     String id = strings[1];
                     String amount = strings[2];
+                    Chat.debug("Oraxen: " + (OraxenItems.exists(id)));
                     if (OraxenItems.exists(id)) {
                         ItemBuilder stack = OraxenItems.getItemById(id);
                         if (stack != null) {
@@ -238,6 +250,7 @@ public class Items {
                 } else if (StackCraft.isExecutableItemsInstalled() && strings[0].equalsIgnoreCase("EXECUTABLEITEMS")) {
                     String id = strings[1];
                     String amount = strings[2];
+                    Chat.debug("ExecutableItems: " + (ExecutableItemsAPI.getExecutableItemsManager().isValidID(id)));
                     if (ExecutableItemsAPI.getExecutableItemsManager().isValidID(id)) {
                         Optional<ExecutableItemInterface> stack = ExecutableItemsAPI.getExecutableItemsManager().getExecutableItem(id);
                         stack.ifPresent(executableItemInterface -> itemStacks.put(executableItemInterface.buildItem(1, Optional.of(p)), Number.getInteger(amount)));
@@ -246,6 +259,7 @@ public class Items {
                     String id = strings[1];
                     String amount = strings[2];
                     Optional<MythicItem> stack = MythicBukkit.inst().getItemManager().getItem(id);
+                    Chat.debug("MythicMobs: " + stack.isPresent());
                     stack.ifPresent(mythicItem -> itemStacks.put(mythicItem.getCachedBaseItem().add(1), Number.getInteger(amount)));
                 }
             }

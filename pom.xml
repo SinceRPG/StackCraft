@@ -108,8 +108,16 @@
 		<dependency>
 			<groupId>com.github.LoneDev6</groupId>
 			<artifactId>api-itemsadder</artifactId>
-			<version>3.6.2-beta-r3-b</version>
-			<scope>provided</scope>
+			<version>3.6.3-beta-14</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/libs/ItemsAdder_3.6.3-beta-14.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>LoneLibs</groupId>
+			<artifactId>api-LoneLibs</artifactId>
+			<version>1.0.46</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/libs/LoneLibs.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>io.lumine</groupId>
