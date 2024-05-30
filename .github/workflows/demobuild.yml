@@ -6,6 +6,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+          cache: maven
+      - name: Build with Maven
+        run: mvn -B package
       - uses: jungwinter/split@v2
         id: split
         with:
@@ -28,3 +37,4 @@ jobs:
             
             [SpigotMC Premium](https://www.spigotmc.org/resources/115265/)
             [SpigotMC Free](https://www.spigotmc.org/resources/115435/)
+          filename: "./target/StackCraft.jar"
