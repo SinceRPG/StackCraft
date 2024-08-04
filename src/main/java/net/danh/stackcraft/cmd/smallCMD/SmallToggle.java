@@ -23,8 +23,7 @@ public class SmallToggle extends SmallCommands {
     }
 
     public void execute(CommandSender c) {
-        if (c instanceof Player) {
-            Player p = (Player) c;
+        if (c instanceof Player p) {
             if (c.hasPermission("stc.toggle." + item)) {
                 Items.per_toggle_craft.replace(p.getName() + "_" + item, !Items.per_toggle_craft.get(p.getName() + "_" + item));
                 p.sendMessage(Chat.colorize(Objects.requireNonNull(Files.getMessage().getString("user.per_item"))
