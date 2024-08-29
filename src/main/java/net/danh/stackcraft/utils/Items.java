@@ -5,6 +5,7 @@ import com.ssomar.score.api.executableitems.config.ExecutableItemInterface;
 import dev.lone.itemsadder.api.CustomStack;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.items.MythicItem;
+import io.lumine.mythic.lib.api.item.NBTItem;
 import io.th0rgal.oraxen.api.OraxenItems;
 import io.th0rgal.oraxen.items.ItemBuilder;
 import net.Indyuce.mmoitems.MMOItems;
@@ -47,54 +48,53 @@ public class Items {
 
     public static boolean checkToggleItem(@NotNull Player p, String itemCraft) {
         AtomicBoolean checkToggle = new AtomicBoolean(false);
-        for (String toggle_item : Objects.requireNonNull(Files.getConfig().getConfigurationSection("toggle")).getKeys(false)) {
-            List<String> itemCraftList = Files.getConfig().getStringList("toggle." + toggle_item + ".contain");
-            String[] toggleItemSplit = Objects.requireNonNull(Files.getConfig().getString("toggle." + toggle_item + ".item")).split(";");
-            if (StackCraft.isIsMMOItemsInstalled() && toggleItemSplit[0].equalsIgnoreCase("MMOITEMS")) {
-                ItemStack itemStack = MMOItems.plugin.getItem(toggleItemSplit[1], toggleItemSplit[2]);
-                if (itemStack != null) {
-                    if (getPlayerAmount(p, itemStack) >= 1) {
-                        checkToggle.set(itemCraftList.contains(itemCraft));
+        for (ItemStack item : p.getInventory().getContents()) {
+            for (String toggle_item : Objects.requireNonNull(Files.getConfig().getConfigurationSection("toggle")).getKeys(false)) {
+                List<String> itemCraftList = Files.getConfig().getStringList("toggle." + toggle_item + ".contain");
+                String[] toggleItemSplit = Objects.requireNonNull(Files.getConfig().getString("toggle." + toggle_item + ".item")).split(";");
+                if (StackCraft.isIsMMOItemsInstalled() && toggleItemSplit[0].equalsIgnoreCase("MMOITEMS")) {
+                    ItemStack itemStack = MMOItems.plugin.getItem(toggleItemSplit[1], toggleItemSplit[2]);
+                    if (itemStack != null) {
+                        NBTItem nbtItem = NBTItem.get(item);
+                        if (nbtItem.hasType() && nbtItem.getType().equalsIgnoreCase(toggleItemSplit[1])) {
+                            if (nbtItem.getString("MMOITEMS_ITEM_ID").equalsIgnoreCase(toggleItemSplit[2])) {
+                                checkToggle.set(itemCraftList.contains(itemCraft));
+                            }
+                        }
                     }
-                }
-            } else if (StackCraft.isIsItemsAdderInstalled() && toggleItemSplit[0].equalsIgnoreCase("ITEMSADDER")) {
-                if (CustomStack.isInRegistry(toggleItemSplit[1])) {
-                    CustomStack stack = CustomStack.getInstance(toggleItemSplit[1]);
-                    if (stack != null) {
-                        ItemStack itemStack = stack.getItemStack();
-                        if (getPlayerAmount(p, itemStack) >= 1) {
+                } else if (StackCraft.isIsItemsAdderInstalled() && toggleItemSplit[0].equalsIgnoreCase("ITEMSADDER")) {
+                    if (CustomStack.isInRegistry(toggleItemSplit[1])) {
+                        CustomStack customStack = CustomStack.byItemStack(item);
+                        if (customStack != null) {
+                            if (customStack.getId().equalsIgnoreCase(toggleItemSplit[1])) {
+                                checkToggle.set(itemCraftList.contains(itemCraft));
+                            }
+                        }
+                    }
+                } else if (StackCraft.isIsOraxenInstalled() && toggleItemSplit[0].equalsIgnoreCase("ORAXEN")) {
+                    if (OraxenItems.exists(toggleItemSplit[1])) {
+                        if (OraxenItems.getIdByItem(item) != null) {
+                            if (OraxenItems.getIdByItem(item).equalsIgnoreCase(toggleItemSplit[1])) {
+                                checkToggle.set(itemCraftList.contains(itemCraft));
+                            }
+                        }
+                    }
+                } else if (StackCraft.isExecutableItemsInstalled() && toggleItemSplit[0].equalsIgnoreCase("EXECUTABLEITEMS")) {
+                    if (ExecutableItemsAPI.getExecutableItemsManager().isValidID(toggleItemSplit[1])) {
+                        Optional<ExecutableItemInterface> stack = ExecutableItemsAPI.getExecutableItemsManager().getExecutableItem(item);
+                        if (stack.isPresent()) {
+                            if (stack.get().getId().equalsIgnoreCase(toggleItemSplit[1])) {
+                                checkToggle.set(itemCraftList.contains(itemCraft));
+                            }
+                        }
+                    }
+                } else if (StackCraft.isIsMythicInstalled() && toggleItemSplit[0].equalsIgnoreCase("MYTHICMOBS")) {
+                    if (MythicBukkit.inst().getItemManager().isMythicItem(item)) {
+                        if (MythicBukkit.inst().getItemManager().getMythicTypeFromItem(item).equalsIgnoreCase(toggleItemSplit[1])) {
                             checkToggle.set(itemCraftList.contains(itemCraft));
                         }
                     }
                 }
-            } else if (StackCraft.isIsOraxenInstalled() && toggleItemSplit[0].equalsIgnoreCase("ORAXEN")) {
-                if (OraxenItems.exists(toggleItemSplit[1])) {
-                    ItemBuilder stack = OraxenItems.getItemById(toggleItemSplit[1]);
-                    if (stack != null) {
-                        ItemStack itemStack = stack.build();
-                        if (getPlayerAmount(p, itemStack) >= 1) {
-                            checkToggle.set(itemCraftList.contains(itemCraft));
-                        }
-                    }
-                }
-            } else if (StackCraft.isExecutableItemsInstalled() && toggleItemSplit[0].equalsIgnoreCase("EXECUTABLEITEMS")) {
-                if (ExecutableItemsAPI.getExecutableItemsManager().isValidID(toggleItemSplit[1])) {
-                    Optional<ExecutableItemInterface> stack = ExecutableItemsAPI.getExecutableItemsManager().getExecutableItem(toggleItemSplit[1]);
-                    if (stack.isPresent()) {
-                        ItemStack itemStack = stack.get().buildItem(1, Optional.of(p));
-                        if (getPlayerAmount(p, itemStack) >= 1) {
-                            checkToggle.set(itemCraftList.contains(itemCraft));
-                        }
-                    }
-                }
-            } else if (StackCraft.isIsMythicInstalled() && toggleItemSplit[0].equalsIgnoreCase("MYTHICMOBS")) {
-                Optional<MythicItem> stack = MythicBukkit.inst().getItemManager().getItem(toggleItemSplit[1]);
-                stack.ifPresent(mythicItem -> {
-                    ItemStack itemStack = mythicItem.getCachedBaseItem();
-                    if (getPlayerAmount(p, itemStack) >= 1) {
-                        checkToggle.set(itemCraftList.contains(itemCraft));
-                    }
-                });
             }
         }
         return checkToggle.get();
