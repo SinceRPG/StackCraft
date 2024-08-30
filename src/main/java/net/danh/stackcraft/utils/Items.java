@@ -53,13 +53,10 @@ public class Items {
                 List<String> itemCraftList = Files.getConfig().getStringList("toggle." + toggle_item + ".contain");
                 String[] toggleItemSplit = Objects.requireNonNull(Files.getConfig().getString("toggle." + toggle_item + ".item")).split(";");
                 if (StackCraft.isIsMMOItemsInstalled() && toggleItemSplit[0].equalsIgnoreCase("MMOITEMS")) {
-                    ItemStack itemStack = MMOItems.plugin.getItem(toggleItemSplit[1], toggleItemSplit[2]);
-                    if (itemStack != null) {
-                        NBTItem nbtItem = NBTItem.get(item);
-                        if (nbtItem.hasType() && nbtItem.getType().equalsIgnoreCase(toggleItemSplit[1])) {
-                            if (nbtItem.getString("MMOITEMS_ITEM_ID").equalsIgnoreCase(toggleItemSplit[2])) {
-                                checkToggle.set(itemCraftList.contains(itemCraft));
-                            }
+                    NBTItem nbtItem = NBTItem.get(item);
+                    if (nbtItem.hasType() && nbtItem.getType().equalsIgnoreCase(toggleItemSplit[1])) {
+                        if (nbtItem.getString("MMOITEMS_ITEM_ID").equalsIgnoreCase(toggleItemSplit[2])) {
+                            checkToggle.set(itemCraftList.contains(itemCraft));
                         }
                     }
                 } else if (StackCraft.isIsItemsAdderInstalled() && toggleItemSplit[0].equalsIgnoreCase("ITEMSADDER")) {
