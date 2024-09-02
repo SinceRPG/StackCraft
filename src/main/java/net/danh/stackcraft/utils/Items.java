@@ -217,7 +217,6 @@ public class Items {
                     String type = strings[1];
                     String id = strings[2];
                     String amount = strings[3];
-                    Chat.debug("MMOItems: " + (MMOItems.plugin.getItem(type, id) != null));
                     if (MMOItems.plugin.getItem(type, id) != null) {
                         itemStacks.put(MMOItems.plugin.getItem(type, id), Number.getInteger(amount));
                     }
