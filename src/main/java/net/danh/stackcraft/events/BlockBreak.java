@@ -12,6 +12,6 @@ public class BlockBreak implements Listener {
 
     @EventHandler
     public void onBreak(@NotNull BlockBreakEvent e) {
-        Bukkit.getScheduler().runTaskAsynchronously(StackCraft.getStackCraft(), () -> CraftCheck.craftingCheck(e.getPlayer()));
+        Bukkit.getScheduler().runTask(StackCraft.getStackCraft(), () -> CraftCheck.craftingCheck(e.getPlayer()));
     }
 }

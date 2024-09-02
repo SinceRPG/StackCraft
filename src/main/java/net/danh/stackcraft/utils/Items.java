@@ -202,7 +202,7 @@ public class Items {
 
     public static @NotNull HashMap<ItemStack, Integer> getIngredients(Player p, @NotNull List<String> ingredientsString) {
         HashMap<ItemStack, Integer> itemStacks = new HashMap<>();
-        ingredientsString.forEach(ingredientString -> {
+        for (String ingredientString :  ingredientsString){
             Chat.debug(ingredientString);
             String[] strings = ingredientString.split(";");
             if (strings.length >= 3) {
@@ -256,7 +256,7 @@ public class Items {
                     stack.ifPresent(mythicItem -> itemStacks.put(mythicItem.getCachedBaseItem().add(1), Number.getInteger(amount)));
                 }
             }
-        });
+        }
         return itemStacks;
     }
 
