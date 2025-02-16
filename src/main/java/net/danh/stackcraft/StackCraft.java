@@ -25,21 +25,23 @@ public final class StackCraft extends JavaPlugin {
     private static boolean isItemsAdderInstalled = false;
     private static boolean isOraxenInstalled = false;
     private static boolean isExecutableItemsInstalled = false;
+    private static boolean isNexoInstalled = false;
+    private static boolean isItemEditInstalled = false;
     private static boolean isMythicInstalled = false;
 
     public static StackCraft getStackCraft() {
         return stackCraft;
     }
 
-    public static boolean isIsMMOItemsInstalled() {
+    public static boolean isMMOItemsInstalled() {
         return isMMOItemsInstalled;
     }
 
-    public static boolean isIsItemsAdderInstalled() {
+    public static boolean isItemsAdderInstalled() {
         return isItemsAdderInstalled;
     }
 
-    public static boolean isIsOraxenInstalled() {
+    public static boolean isOraxenInstalled() {
         return isOraxenInstalled;
     }
 
@@ -47,8 +49,16 @@ public final class StackCraft extends JavaPlugin {
         return isExecutableItemsInstalled;
     }
 
-    public static boolean isIsMythicInstalled() {
+    public static boolean isMythicInstalled() {
         return isMythicInstalled;
+    }
+
+    public static boolean isNexoInstalled() {
+        return isNexoInstalled;
+    }
+
+    public static boolean isItemEditInstalled() {
+        return isItemEditInstalled;
     }
 
     @Override
@@ -73,6 +83,14 @@ public final class StackCraft extends JavaPlugin {
         if (SCAPI.isPremium() && getServer().getPluginManager().getPlugin("ExecutableItems") != null) {
             isExecutableItemsInstalled = true;
             getLogger().log(Level.INFO, "Compatible with ExecutableItems");
+        }
+        if (SCAPI.isPremium() && getServer().getPluginManager().getPlugin("Nexo") != null) {
+            isNexoInstalled = true;
+            getLogger().log(Level.INFO, "Compatible with Nexo");
+        }
+        if (getServer().getPluginManager().getPlugin("ItemEdit") != null) {
+            isItemEditInstalled = true;
+            getLogger().log(Level.INFO, "Compatible with ItemEdit");
         }
         if (SCAPI.isPremium() && getServer().getPluginManager().getPlugin("MythicMobs") != null) {
             isMythicInstalled = true;

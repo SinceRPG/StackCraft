@@ -1,8 +1,11 @@
 package net.danh.stackcraft.utils;
 
+import com.nexomc.nexo.api.NexoItems;
 import com.ssomar.score.api.executableitems.ExecutableItemsAPI;
 import com.ssomar.score.api.executableitems.config.ExecutableItemInterface;
 import dev.lone.itemsadder.api.CustomStack;
+import emanondev.itemedit.ItemEdit;
+import emanondev.itemedit.storage.ServerStorage;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.items.MythicItem;
 import io.th0rgal.oraxen.api.OraxenItems;
@@ -104,7 +107,7 @@ public class Items {
                 int amount = Number.getInteger(itemCraft.split(";")[2]);
                 itemStack = new ItemStack(material, amount);
             }
-        } else if (StackCraft.isIsMMOItemsInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("MMOITEMS")) {
+        } else if (StackCraft.isMMOItemsInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("MMOITEMS")) {
             String type = itemCraft.split(";")[1];
             String id = itemCraft.split(";")[2];
             String amount = itemCraft.split(";")[3];
@@ -114,7 +117,7 @@ public class Items {
                 item.setAmount(Number.getInteger(amount));
                 itemStack = item;
             }
-        } else if (StackCraft.isIsItemsAdderInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("ITEMSADDER")) {
+        } else if (StackCraft.isItemsAdderInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("ITEMSADDER")) {
             String id = itemCraft.split(";")[1];
             String amount = itemCraft.split(";")[2];
             if (CustomStack.isInRegistry(id)) {
@@ -125,7 +128,7 @@ public class Items {
                     itemStack.setAmount(Number.getInteger(amount));
                 }
             }
-        } else if (StackCraft.isIsOraxenInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("ORAXEN")) {
+        } else if (StackCraft.isOraxenInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("ORAXEN")) {
             String id = itemCraft.split(";")[1];
             String amount = itemCraft.split(";")[2];
             Chat.debug("Oraxen GI: " + (OraxenItems.exists(id)));
@@ -148,7 +151,32 @@ public class Items {
                     itemStack = stack.get().buildItem(Number.getInteger(amount), Optional.of(p));
                 }
             }
-        } else if (StackCraft.isIsMythicInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("MYTHICMOBS")) {
+        } else if (StackCraft.isNexoInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("NEXO")) {
+            String id = itemCraft.split(";")[1];
+            String amount = itemCraft.split(";")[2];
+            Chat.debug("Nexo GI: " + (NexoItems.itemFromId(id) != null));
+            if (NexoItems.itemFromId(id) != null) {
+                com.nexomc.nexo.items.ItemBuilder itemBuilder = NexoItems.itemFromId(id);
+                Chat.debug("Nexo GI: " + (itemBuilder != null));
+                if (itemBuilder != null) {
+                    itemStack = itemBuilder.build();
+                    itemStack.setAmount(Integer.parseInt(amount));
+                }
+            }
+        } else if (StackCraft.isItemEditInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("ITEMEDIT")) {
+            String id = itemCraft.split(";")[1];
+            String amount = itemCraft.split(";")[2];
+            ServerStorage storage = ItemEdit.get().getServerStorage();
+            Chat.debug("ItemEdit GI: " + (storage.getItem(id) != null));
+            if (storage.getItem(id) != null) {
+                ItemStack item = storage.getItem(id);
+                Chat.debug("ItemEdit GI: " + (item != null));
+                if (item != null) {
+                    item.setAmount(Integer.parseInt(amount));
+                    itemStack = item;
+                }
+            }
+        } else if (StackCraft.isMythicInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("MYTHICMOBS")) {
             String id = itemCraft.split(";")[1];
             String amount = itemCraft.split(";")[2];
             Optional<MythicItem> stack = MythicBukkit.inst().getItemManager().getItem(id);
@@ -202,7 +230,7 @@ public class Items {
 
     public static @NotNull HashMap<ItemStack, Integer> getIngredients(Player p, @NotNull List<String> ingredientsString) {
         HashMap<ItemStack, Integer> itemStacks = new HashMap<>();
-        for (String ingredientString :  ingredientsString){
+        for (String ingredientString : ingredientsString) {
             Chat.debug(ingredientString);
             String[] strings = ingredientString.split(";");
             if (strings.length >= 3) {
@@ -213,14 +241,14 @@ public class Items {
                         ItemStack itemStack = new ItemStack(material);
                         itemStacks.put(itemStack, amount);
                     }
-                } else if (StackCraft.isIsMMOItemsInstalled() && strings[0].equalsIgnoreCase("MMOITEMS")) {
+                } else if (StackCraft.isMMOItemsInstalled() && strings[0].equalsIgnoreCase("MMOITEMS")) {
                     String type = strings[1];
                     String id = strings[2];
                     String amount = strings[3];
                     if (MMOItems.plugin.getItem(type, id) != null) {
                         itemStacks.put(MMOItems.plugin.getItem(type, id), Number.getInteger(amount));
                     }
-                } else if (StackCraft.isIsItemsAdderInstalled() && strings[0].equalsIgnoreCase("ITEMSADDER")) {
+                } else if (StackCraft.isItemsAdderInstalled() && strings[0].equalsIgnoreCase("ITEMSADDER")) {
                     String id = strings[1];
                     String amount = strings[2];
                     Chat.debug("ItemAdders: " + (CustomStack.isInRegistry(id)));
@@ -230,7 +258,7 @@ public class Items {
                             itemStacks.put(stack.getItemStack(), Number.getInteger(amount));
                         }
                     }
-                } else if (StackCraft.isIsOraxenInstalled() && strings[0].equalsIgnoreCase("ORAXEN")) {
+                } else if (StackCraft.isOraxenInstalled() && strings[0].equalsIgnoreCase("ORAXEN")) {
                     String id = strings[1];
                     String amount = strings[2];
                     Chat.debug("Oraxen: " + (OraxenItems.exists(id)));
@@ -238,6 +266,27 @@ public class Items {
                         ItemBuilder stack = OraxenItems.getItemById(id);
                         if (stack != null) {
                             itemStacks.put(stack.build(), Number.getInteger(amount));
+                        }
+                    }
+                } else if (StackCraft.isNexoInstalled() && strings[0].equalsIgnoreCase("NEXO")) {
+                    String id = strings[1];
+                    String amount = strings[2];
+                    Chat.debug("Nexo: " + (NexoItems.itemFromId(id) != null));
+                    if (NexoItems.itemFromId(id) != null) {
+                        com.nexomc.nexo.items.ItemBuilder stack = NexoItems.itemFromId(id);
+                        if (stack != null) {
+                            itemStacks.put(stack.build(), Number.getInteger(amount));
+                        }
+                    }
+                } else if (StackCraft.isItemEditInstalled() && strings[0].equalsIgnoreCase("ITEMEDIT")) {
+                    String id = strings[1];
+                    String amount = strings[2];
+                    ServerStorage storage = ItemEdit.get().getServerStorage();
+                    Chat.debug("ItemEdit: " + (storage.getItem(id) != null));
+                    if (storage.getItem(id) != null) {
+                        ItemStack item = storage.getItem(id);
+                        if (item != null) {
+                            itemStacks.put(item, Number.getInteger(amount));
                         }
                     }
                 } else if (StackCraft.isExecutableItemsInstalled() && strings[0].equalsIgnoreCase("EXECUTABLEITEMS")) {
@@ -248,7 +297,7 @@ public class Items {
                         Optional<ExecutableItemInterface> stack = ExecutableItemsAPI.getExecutableItemsManager().getExecutableItem(id);
                         stack.ifPresent(executableItemInterface -> itemStacks.put(executableItemInterface.buildItem(1, Optional.of(p)), Number.getInteger(amount)));
                     }
-                } else if (StackCraft.isIsMythicInstalled() && strings[0].equalsIgnoreCase("MYTHICMOBS")) {
+                } else if (StackCraft.isMythicInstalled() && strings[0].equalsIgnoreCase("MYTHICMOBS")) {
                     String id = strings[1];
                     String amount = strings[2];
                     Optional<MythicItem> stack = MythicBukkit.inst().getItemManager().getItem(id);
