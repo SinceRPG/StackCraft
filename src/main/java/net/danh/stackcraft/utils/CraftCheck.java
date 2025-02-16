@@ -26,8 +26,8 @@ public class CraftCheck {
                     perToggleCraft.set(listCrafting.contains(itemCraft));
                 }
             });
-            if (Items.toggle.getOrDefault(p, false) ||  CraftCheck.perToggleCraft(perToggleCraft.get())) {
-                Chat.debug(Items.toggle.getOrDefault(p, false) + "_"  + perToggleCraft.get());
+            if (Items.toggle.getOrDefault(p, false) || CraftCheck.perToggleCraft(perToggleCraft.get())) {
+                Chat.debug(Items.toggle.getOrDefault(p, false) + "_" + perToggleCraft.get());
                 List<String> ingredient = Files.getConfig().getStringList("craft." + itemCraft + ".ingredient");
                 HashMap<ItemStack, Integer> ingredients = Items.getIngredients(p, ingredient);
                 ingredients.forEach((itemStack, integer) -> {
