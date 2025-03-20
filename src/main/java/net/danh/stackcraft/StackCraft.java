@@ -120,6 +120,7 @@ public final class StackCraft extends JavaPlugin {
             }
             Items.toggle_craft.put(item_list, item_list);
             Items.full_toggle_craft.put(id, item_list);
+            CraftCheck.loadCrafting();
         }
         if (!SCAPI.isPremium()) {
             getLogger().log(Level.INFO, "You are using the non-premium version so you CANNOT use some features such as:");
