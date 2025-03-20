@@ -39,9 +39,9 @@ public class STC_PAPI extends PlaceholderExpansion {
     public String onPlaceholderRequest(Player p, @NotNull String args) {
         if (args.startsWith("toggle_")) {
             String type = args.substring(7);
-            return Items.per_toggle_craft.getOrDefault(p.getName() + "_" + type, false) ? Chat.normalColorize(Files.getConfig().getString("placeholder.true")) : Chat.normalColorize(Files.getConfig().getString("placeholder.false"));
+            return Items.per_toggle_craft.getOrDefault(p.getName() + "_" + type, false) ? Chat.normalColorize(Files.getConfig().getString("placeholder.state_true")) : Chat.normalColorize(Files.getConfig().getString("placeholder.state_false"));
         } else if (args.equalsIgnoreCase("toggle")) {
-            return Items.toggle.getOrDefault(p, false) ? Chat.normalColorize(Files.getConfig().getString("placeholder.true")) : Chat.normalColorize(Files.getConfig().getString("placeholder.false"));
+            return Items.toggle.getOrDefault(p, false) ? Chat.normalColorize(Files.getConfig().getString("placeholder.state_true")) : Chat.normalColorize(Files.getConfig().getString("placeholder.state_false"));
         }
         return "";
     }
