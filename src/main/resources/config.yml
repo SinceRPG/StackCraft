@@ -10,8 +10,8 @@ default_toggle_item:
   per: false
 
 placeholder:
-  true: "&aOn"
-  false: "&cOff"
+  state_true: "&aOn"
+  state_false: "&cOff"
 
 toggle:
   coal: #permission for player can use command is stc.toggle.coal
