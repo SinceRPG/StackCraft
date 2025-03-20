@@ -32,9 +32,13 @@ public class CraftCheck {
                 HashMap<ItemStack, Integer> ingredients = Items.getIngredients(p, ingredient);
                 ingredients.forEach((itemStack, integer) -> {
                     int craftAmount = ingredients.get(itemStack);
+                    Chat.debug("craftAmount: " + craftAmount);
                     int playerAmount = Items.getPlayerAmount(p, itemStack);
+                    Chat.debug("playerAmount: " + playerAmount);
+                    Chat.debug("craft: " + playerAmount / craftAmount);
                     if (playerAmount >= craftAmount) {
                         for (int i = 1; i <= playerAmount / craftAmount; i++) {
+                            Chat.debug("craftTimes: " + i);
                             if (Items.checkCraftIngredient(p, ingredient, Files.getConfig().getBoolean("craft." + itemCraft + ".required_all", false))) {
                                 p.getInventory().addItem(Items.generateItem(p, itemCraft));
                             }

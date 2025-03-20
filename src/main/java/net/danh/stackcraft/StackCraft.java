@@ -30,6 +30,7 @@ public final class StackCraft extends JavaPlugin {
     private static boolean isNexoInstalled = false;
     private static boolean isItemEditInstalled = false;
     private static boolean isMythicInstalled = false;
+    private static boolean isAutoCraftSchedule = false;
 
     public static StackCraft getStackCraft() {
         return stackCraft;
@@ -61,6 +62,14 @@ public final class StackCraft extends JavaPlugin {
 
     public static boolean isItemEditInstalled() {
         return isItemEditInstalled;
+    }
+
+    public static boolean isIsAutoCraftSchedule() {
+        return isAutoCraftSchedule;
+    }
+
+    public static void setIsAutoCraftSchedule(boolean isAutoCraftSchedule) {
+        StackCraft.isAutoCraftSchedule = isAutoCraftSchedule;
     }
 
     @Override
@@ -116,10 +125,10 @@ public final class StackCraft extends JavaPlugin {
             getLogger().log(Level.INFO, "You are using the non-premium version so you CANNOT use some features such as:");
             getLogger().log(Level.INFO, "- Being able to craft custom items (ItemsAdder, Oraxen, ExecutableItems, MythicMobs)");
             getLogger().log(Level.INFO, "- Being able to toggle on/off craft per item");
-            getLogger().log(Level.INFO, "- Being able to toggle autocraft by put item toggle craft in inventory");
         }
+        isAutoCraftSchedule = Files.getConfig().getBoolean("settings.auto_craft_schedule");
         Bukkit.getScheduler().scheduleSyncRepeatingTask(stackCraft, () -> {
-            if (Files.getConfig().getBoolean("settings.auto_craft_schedule")) {
+            if (isAutoCraftSchedule) {
                 getServer().getOnlinePlayers().forEach(CraftCheck::craftingCheck);
             }
         }, 20L, 20L);

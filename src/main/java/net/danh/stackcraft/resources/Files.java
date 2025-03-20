@@ -1,5 +1,6 @@
 package net.danh.stackcraft.resources;
 
+import net.danh.stackcraft.StackCraft;
 import net.xconfig.bukkit.model.SimpleConfigurationManager;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -15,6 +16,7 @@ public class Files {
 
     public static void reloadFiles() {
         SimpleConfigurationManager.get().reload("config.yml", "message.yml");
+        StackCraft.setIsAutoCraftSchedule(Files.getConfig().getBoolean("settings.auto_craft_schedule"));
     }
 
     public static FileConfiguration getConfig() {
