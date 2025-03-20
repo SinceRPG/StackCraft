@@ -5,6 +5,8 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.ChatColor;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -12,6 +14,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Chat {
+
+    @NotNull
+    @Contract("_ -> new")
+    public static String normalColorize(String string) {
+        return ChatColor.translateAlternateColorCodes('&', replaceColorSymbol(string));
+    }
+
+    public static List<String> normalColorize(@NotNull List<String> list) {
+        return list.stream().map(Chat::normalColorize).collect(Collectors.toList());
+    }
 
     public static void debug(String message) {
         if (Files.getConfig().getBoolean("settings.debug")) StackCraft.getStackCraft().getLogger().warning(message);
@@ -37,6 +49,7 @@ public class Chat {
         return Arrays.stream(message).map(Chat::colorizewp).collect(Collectors.toList());
     }
 
+    @NotNull
     public static String replaceColorCode(String message) {
         message = message.replace("§", "&");
         if (message.contains("&0")) message = message.replace("&0", "<black>");
@@ -73,6 +86,56 @@ public class Chat {
         if (message.contains("&M")) message = message.replace("&M", "<strikethrough>");
         if (message.contains("&N")) message = message.replace("&N", "<underlined>");
         if (message.contains("&R")) message = message.replace("&R", "<reset>");
+        return message;
+    }
+
+    @NotNull
+    public static String replaceColorSymbol(@NotNull String message) {
+        if (message.contains("<black>")) message = message.replace("<black>", "&0");
+        if (message.contains("<dark_blue>")) message = message.replace("<dark_blue>", "&1");
+        if (message.contains("<dark_green>")) message = message.replace("<dark_green>", "&2");
+        if (message.contains("<dark_aqua>")) message = message.replace("<dark_aqua>", "&3");
+        if (message.contains("<dark_red>")) message = message.replace("<dark_red>", "&4");
+        if (message.contains("<dark_purple>")) message = message.replace("<dark_purple>", "&5");
+        if (message.contains("<gold>")) message = message.replace("<gold>", "&6");
+        if (message.contains("<gray>")) message = message.replace("<gray>", "&7");
+        if (message.contains("<dark_gray>")) message = message.replace("<dark_gray>", "&8");
+        if (message.contains("<blue>")) message = message.replace("<blue>", "&9");
+        if (message.contains("<italic>")) message = message.replace("<italic>", "&o");
+        if (message.contains("<green>")) message = message.replace("<green>", "&a");
+        if (message.contains("<aqua>")) message = message.replace("<aqua>", "&b");
+        if (message.contains("<red>")) message = message.replace("<red>", "&c");
+        if (message.contains("<light_purple>")) message = message.replace("<light_purple>", "&d");
+        if (message.contains("<yellow>")) message = message.replace("<yellow>", "&e");
+        if (message.contains("<white>")) message = message.replace("<white>", "&f");
+        if (message.contains("<obfuscated>")) message = message.replace("<obfuscated>", "&k");
+        if (message.contains("<bold>")) message = message.replace("<bold>", "&l");
+        if (message.contains("<strikethrough>")) message = message.replace("<strikethrough>", "&m");
+        if (message.contains("<underlined>")) message = message.replace("<underlined>", "&n");
+        if (message.contains("<reset>")) message = message.replace("<reset>", "&r");
+
+        if (message.contains("</black>")) message = message.replace("</black>", "");
+        if (message.contains("</dark_blue>")) message = message.replace("</dark_blue>", "");
+        if (message.contains("</dark_green>")) message = message.replace("</dark_green>", "");
+        if (message.contains("</dark_aqua>")) message = message.replace("</dark_aqua>", "");
+        if (message.contains("</dark_red>")) message = message.replace("</dark_red>", "");
+        if (message.contains("</dark_purple>")) message = message.replace("</dark_purple>", "");
+        if (message.contains("</gold>")) message = message.replace("</gold>", "");
+        if (message.contains("</gray>")) message = message.replace("</gray>", "");
+        if (message.contains("</dark_gray>")) message = message.replace("</dark_gray>", "");
+        if (message.contains("</blue>")) message = message.replace("</blue>", "");
+        if (message.contains("</italic>")) message = message.replace("</italic>", "");
+        if (message.contains("</green>")) message = message.replace("</green>", "");
+        if (message.contains("</aqua>")) message = message.replace("</aqua>", "");
+        if (message.contains("</red>")) message = message.replace("</red>", "");
+        if (message.contains("</light_purple>")) message = message.replace("</light_purple>", "");
+        if (message.contains("</yellow>")) message = message.replace("</yellow>", "");
+        if (message.contains("</white>")) message = message.replace("</white>", "");
+        if (message.contains("</obfuscated>")) message = message.replace("</obfuscated>", "");
+        if (message.contains("</bold>")) message = message.replace("</bold>", "");
+        if (message.contains("</strikethrough>")) message = message.replace("</strikethrough>", "");
+        if (message.contains("</underlined>")) message = message.replace("</underlined>", "");
+        if (message.contains("</reset>")) message = message.replace("</reset>", "");
         return message;
     }
 
