@@ -68,6 +68,7 @@ public final class StackCraft extends JavaPlugin {
         stackCraft = this;
         SimpleConfigurationManager.register(stackCraft);
         Files.loadFiles();
+        Files.reloadFiles();
         registerEvents(new BlockBreak(), new EntityDeath(), new JoinQuit(), new CommandPreprocess());
         new STC_CMD();
         if (getServer().getPluginManager().getPlugin("MMOItems") != null) {
@@ -126,6 +127,7 @@ public final class StackCraft extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        Files.reloadFiles();
         Files.saveFiles();
         Bukkit.getOnlinePlayers().forEach(player -> new PlayerData(player).saveData());
     }
