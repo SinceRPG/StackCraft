@@ -328,6 +328,7 @@ public class Items {
         final PlayerInventory inv = player.getInventory();
         final ItemStack[] items = inv.getContents();
         int c = 0;
+        boolean change = false;
         for (int i = 0; i < items.length; ++i) {
             final ItemStack is = items[i];
             if (is != null) {
@@ -340,11 +341,14 @@ public class Items {
                     }
                     c += is.getAmount();
                     items[i] = null;
+                    change = true;
                 }
             }
         }
-        inv.setContents(items);
-        player.updateInventory();
+        if (change) {
+            inv.setContents(items);
+            player.updateInventory();
+        }
     }
 
 }
