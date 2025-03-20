@@ -9,13 +9,16 @@ default_toggle_item:
   all: false
   per: false
 
+placeholder:
+  true: "&aOn"
+  false: "&cOff"
+
 toggle:
   coal: #permission for player can use command is stc.toggle.coal
     display: "<gray>AutoCraft Coal"
     command: #If you don't want to use command for this, you can delete this
       register: true #If true -> after restart player can tab this command, else still can use command but can't tab
       alias: coalcrafttoggle #command
-    item: MMOITEMS;MATERIAL;COAL_CRAFT #When this item is in player inventory -> Auto crafting is enabled
     contain:
       - VANILLA;COAL;1
       - MMOITEMS;MATERIAL;COAL;1

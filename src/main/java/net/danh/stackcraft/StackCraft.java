@@ -7,6 +7,7 @@ import net.danh.stackcraft.events.BlockBreak;
 import net.danh.stackcraft.events.CommandPreprocess;
 import net.danh.stackcraft.events.EntityDeath;
 import net.danh.stackcraft.events.JoinQuit;
+import net.danh.stackcraft.placeholder.STC_PAPI;
 import net.danh.stackcraft.playerdata.PlayerData;
 import net.danh.stackcraft.resources.Files;
 import net.danh.stackcraft.utils.CraftCheck;
@@ -96,6 +97,10 @@ public final class StackCraft extends JavaPlugin {
         if (SCAPI.isPremium() && getServer().getPluginManager().getPlugin("MythicMobs") != null) {
             isMythicInstalled = true;
             getLogger().log(Level.INFO, "Compatible with MythicMobs");
+        }
+        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new STC_PAPI().register();
+            getLogger().log(Level.INFO, "Compatible with PlaceholderAPI");
         }
         for (String item_list : Objects.requireNonNull(Files.getConfig().getConfigurationSection("toggle")).getKeys(false)) {
             String id = Files.getConfig().getString("toggle." + item_list + ".command.alias");

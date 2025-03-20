@@ -12,6 +12,7 @@ softdepend:
   - SCore
   - Nexo
   - MythicMobs
+  - PlaceholderAPI
 commands:
   stc:
     description: StackCraft CMD
