@@ -4,8 +4,10 @@ import net.danh.stackcraft.resources.Chat;
 import net.danh.stackcraft.resources.Files;
 import net.danh.stackcraft.utils.Items;
 import net.danh.stackcraft.utils.SmallCommands;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,26 +24,40 @@ public class SmallToggle extends SmallCommands {
         this.item = item;
     }
 
-    public void execute(CommandSender c) {
+    public void execute(CommandSender c, String[] args) {
         if (c instanceof Player p) {
-            if (c.hasPermission("stc.toggle." + item)) {
-                Items.per_toggle_craft.replace(p.getName() + "_" + item, !Items.per_toggle_craft.get(p.getName() + "_" + item));
-                p.sendMessage(Chat.colorize(Objects.requireNonNull(Files.getMessage().getString("user.per_item"))
-                        .replace("#status#", Items.getStatus(p, item))
-                        .replace("#item#", Objects.requireNonNull(Files.getConfig().getString("toggle." + item + ".display")))));
+            if (args.length == 0) {
+                if (p.hasPermission("stc.toggle." + item)) {
+                    Items.per_toggle_craft.replace(p.getName() + "_" + item, !Items.per_toggle_craft.get(p.getName() + "_" + item));
+                    p.sendMessage(Chat.colorize(Objects.requireNonNull(Files.getMessage().getString("user.per_item"))
+                            .replace("#status#", Items.getStatus(p, item))
+                            .replace("#item#", Objects.requireNonNull(Files.getConfig().getString("toggle." + item + ".display")))));
+                }
+            }
+        } else if (c instanceof ConsoleCommandSender) {
+            if (args.length == 1) {
+                Player p = Bukkit.getPlayer(args[0]);
+                if (p != null) {
+                    if (p.hasPermission("stc.toggle." + item)) {
+                        Items.per_toggle_craft.replace(p.getName() + "_" + item, !Items.per_toggle_craft.get(p.getName() + "_" + item));
+                        p.sendMessage(Chat.colorize(Objects.requireNonNull(Files.getMessage().getString("user.per_item"))
+                                .replace("#status#", Items.getStatus(p, item))
+                                .replace("#item#", Objects.requireNonNull(Files.getConfig().getString("toggle." + item + ".display")))));
+                    }
+                }
             }
         }
     }
 
     @Override
     public boolean execute(@NotNull CommandSender commandSender, @NotNull String s, @NotNull String[] strings) {
-        execute(commandSender);
+        execute(commandSender, strings);
         return true;
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        execute(commandSender);
+        execute(commandSender, strings);
         return true;
     }
 
