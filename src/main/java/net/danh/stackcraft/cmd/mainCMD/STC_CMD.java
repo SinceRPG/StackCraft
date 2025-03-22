@@ -4,6 +4,7 @@ import net.danh.stackcraft.cmd.smallCMD.SmallToggle;
 import net.danh.stackcraft.resources.Chat;
 import net.danh.stackcraft.resources.Files;
 import net.danh.stackcraft.utils.CMDBase;
+import net.danh.stackcraft.utils.CraftCheck;
 import net.danh.stackcraft.utils.Items;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -49,10 +50,9 @@ public class STC_CMD extends CMDBase {
                         Items.toggle_craft.forEach((s, s2) -> Bukkit.getOnlinePlayers().forEach(p -> {
                             if (!Items.per_toggle_craft.containsKey(p.getName() + "_" + s)) {
                                 Items.per_toggle_craft.put(p.getName() + "_" + s, Files.getConfig().getBoolean("default_toggle_item.per", false));
-                            } else {
-                                Items.per_toggle_craft.replace(p.getName() + "_" + s, Files.getConfig().getBoolean("default_toggle_item.per", false));
                             }
                         }));
+                        CraftCheck.loadCrafting();
                     }
                     Chat.sendMessage(c, Files.getMessage().getString("admin.reload_files"));
                 }
