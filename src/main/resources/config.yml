@@ -9,10 +9,6 @@ default_toggle_item:
   all: false
   per: false
 
-placeholder:
-  state_true: "&aOn"
-  state_false: "&cOff"
-
 toggle:
   coal: #permission for player can use command is stc.toggle.coal
     display: "<gray>AutoCraft Coal"
