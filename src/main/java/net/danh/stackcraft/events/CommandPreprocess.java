@@ -13,7 +13,7 @@ public class CommandPreprocess implements Listener {
     public void onCommandExecute(PlayerCommandPreprocessEvent event) {
         String cmd = event.getMessage().substring(1);
         if (Items.full_toggle_craft.containsKey(cmd)) {
-            new SmallToggle(cmd, Items.full_toggle_craft.get(cmd)).execute(event.getPlayer());
+            new SmallToggle(cmd, Items.full_toggle_craft.get(cmd)).execute(event.getPlayer(), event.getMessage().replace("/", "").split(" "));
             event.setCancelled(true);
         }
     }
