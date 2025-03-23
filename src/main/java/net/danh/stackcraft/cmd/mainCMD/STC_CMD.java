@@ -52,8 +52,8 @@ public class STC_CMD extends CMDBase {
                                 Items.per_toggle_craft.put(p.getName() + "_" + s, Files.getConfig().getBoolean("default_toggle_item.per", false));
                             }
                         }));
-                        CraftCheck.loadCrafting();
                     }
+                    CraftCheck.loadCrafting();
                     Chat.sendMessage(c, Files.getMessage().getString("admin.reload_files"));
                 }
             }
