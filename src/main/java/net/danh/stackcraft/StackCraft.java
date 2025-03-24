@@ -4,7 +4,6 @@ import net.danh.stackcraft.api.SCAPI;
 import net.danh.stackcraft.cmd.mainCMD.STC_CMD;
 import net.danh.stackcraft.cmd.smallCMD.SmallToggle;
 import net.danh.stackcraft.events.BlockBreak;
-import net.danh.stackcraft.events.CommandPreprocess;
 import net.danh.stackcraft.events.EntityDeath;
 import net.danh.stackcraft.events.JoinQuit;
 import net.danh.stackcraft.placeholder.STC_PAPI;
@@ -78,7 +77,7 @@ public final class StackCraft extends JavaPlugin {
         SimpleConfigurationManager.register(stackCraft);
         Files.loadFiles();
         Files.reloadFiles();
-        registerEvents(new BlockBreak(), new EntityDeath(), new JoinQuit(), new CommandPreprocess());
+        registerEvents(new BlockBreak(), new EntityDeath(), new JoinQuit());
         new STC_CMD();
         if (getServer().getPluginManager().getPlugin("MMOItems") != null) {
             isMMOItemsInstalled = true;
@@ -120,8 +119,8 @@ public final class StackCraft extends JavaPlugin {
             }
             Items.toggle_craft.put(item_list, item_list);
             Items.full_toggle_craft.put(id, item_list);
-            CraftCheck.loadCrafting();
         }
+        CraftCheck.loadCrafting();
         if (!SCAPI.isPremium()) {
             getLogger().log(Level.INFO, "You are using the non-premium version so you CANNOT use some features such as:");
             getLogger().log(Level.INFO, "- Being able to craft custom items (ItemsAdder, Oraxen, ExecutableItems, MythicMobs)");
