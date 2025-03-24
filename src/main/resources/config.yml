@@ -13,7 +13,7 @@ toggle:
   coal: #permission for player can use command is stc.toggle.coal
     display: "<gray>AutoCraft Coal"
     command: #If you don't want to use command for this, you can delete this
-      register: true #If true -> after restart player can tab this command, else still can use command but can't tab
+      register: true #If true -> command will register after player rejoin
       alias: coalcrafttoggle #command
     contain:
       - VANILLA;COAL;1

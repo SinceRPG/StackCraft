@@ -24,7 +24,8 @@ public class SmallToggle extends SmallCommands {
         this.item = item;
     }
 
-    public void execute(CommandSender c, String[] args) {
+    @Override
+    public boolean execute(@NotNull CommandSender c, @NotNull String s, @NotNull String[] args) {
         if (c instanceof Player p) {
             if (args.length == 0) {
                 if (p.hasPermission("stc.toggle." + item)) {
@@ -47,17 +48,12 @@ public class SmallToggle extends SmallCommands {
                 }
             }
         }
-    }
-
-    @Override
-    public boolean execute(@NotNull CommandSender commandSender, @NotNull String s, @NotNull String[] strings) {
-        execute(commandSender, strings);
         return true;
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        execute(commandSender, strings);
+    public boolean onCommand(@NotNull CommandSender c, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        execute(c, s, args);
         return true;
     }
 
