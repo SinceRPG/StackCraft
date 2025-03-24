@@ -28,7 +28,9 @@ public class CraftCheck {
         if (!listCrafting.isEmpty())
             listCrafting.clear();
         Items.toggle_craft.forEach((s, s2) -> {
-            listCrafting.put(s, Files.getConfig().getStringList("toggle." + s + ".contain"));
+            List<String> list = Files.getConfig().getStringList("toggle." + s + ".contain");
+            Chat.debug("Crafting: " + s + " --> " + list);
+            listCrafting.put(s, list);
         });
         loadItemCraft();
     }
@@ -48,7 +50,9 @@ public class CraftCheck {
         if (!ingredient.isEmpty())
             ingredient.clear();
         for (String iCraft : itemCraft) {
-            ingredient.put(iCraft, Files.getConfig().getStringList("craft." + iCraft + ".ingredient"));
+            List<String> ing = Files.getConfig().getStringList("craft." + iCraft + ".ingredient");
+            Chat.debug("Ingredient: " + ing);
+            ingredient.put(iCraft, ing);
         }
     }
 
@@ -87,24 +91,26 @@ public class CraftCheck {
                         Chat.debug("tCraft status: " + Items.per_toggle_craft.getOrDefault(p.getName() + "_" + s, false));
                         Chat.debug("tCraft list status: " + listCrafting.get(s).contains(iCraft));
                         if (Items.toggle.getOrDefault(p, false) || CraftCheck.perToggleCraft(Items.per_toggle_craft.getOrDefault(p.getName() + "_" + s, false))) {
-                            Chat.debug(Items.toggle.getOrDefault(p, false) + "_" + Items.per_toggle_craft.getOrDefault(p.getName() + "_" + s, false));
-                            List<String> ingredient = getIngredient().get(iCraft);
-                            HashMap<ItemStack, Integer> ingredients = Items.getIngredients(p, ingredient);
-                            ingredients.forEach((itemStack, integer) -> {
-                                int craftAmount = ingredients.get(itemStack);
-                                Chat.debug("craftAmount: " + craftAmount);
-                                int playerAmount = Items.getPlayerAmount(p, itemStack);
-                                Chat.debug("playerAmount: " + playerAmount);
-                                Chat.debug("craft: " + playerAmount / craftAmount);
-                                if (playerAmount >= craftAmount) {
-                                    for (int i = 1; i <= playerAmount / craftAmount; i++) {
-                                        Chat.debug("craftTimes: " + i);
-                                        if (Items.checkCraftIngredient(p, ingredient, getRequiredAll().get(iCraft))) {
-                                            p.getInventory().addItem(Items.generateItem(p, iCraft));
+                            if (getListCrafting().get(s).contains(iCraft)) {
+                                Chat.debug(Items.toggle.getOrDefault(p, false) + "_" + Items.per_toggle_craft.getOrDefault(p.getName() + "_" + s, false));
+                                List<String> ingredient = getIngredient().get(iCraft);
+                                HashMap<ItemStack, Integer> ingredients = Items.getIngredients(p, ingredient);
+                                ingredients.forEach((itemStack, integer) -> {
+                                    int craftAmount = ingredients.get(itemStack);
+                                    Chat.debug("craftAmount: " + craftAmount);
+                                    int playerAmount = Items.getPlayerAmount(p, itemStack);
+                                    Chat.debug("playerAmount: " + playerAmount);
+                                    Chat.debug("craft: " + playerAmount / craftAmount);
+                                    if (playerAmount >= craftAmount) {
+                                        for (int i = 1; i <= playerAmount / craftAmount; i++) {
+                                            Chat.debug("craftTimes: " + i);
+                                            if (Items.checkCraftIngredient(p, ingredient, getRequiredAll().get(iCraft))) {
+                                                p.getInventory().addItem(Items.generateItem(p, iCraft));
+                                            }
                                         }
                                     }
-                                }
-                            });
+                                });
+                            }
                         }
                     });
                 }
