@@ -81,40 +81,41 @@ public class CraftCheck {
     }
 
     public static void craftingCheck(Player p) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (String iCraft : itemCraft) {
-                    Chat.debug("iCraft: " + iCraft);
-                    Items.toggle_craft.forEach((s, s2) -> {
-                        Chat.debug("tCraft: " + s);
-                        Chat.debug("tCraft status: " + Items.per_toggle_craft.getOrDefault(p.getName() + "_" + s, false));
-                        Chat.debug("tCraft list status: " + listCrafting.get(s).contains(iCraft));
-                        if (Items.toggle.getOrDefault(p, false) || CraftCheck.perToggleCraft(Items.per_toggle_craft.getOrDefault(p.getName() + "_" + s, false))) {
-                            if (getListCrafting().get(s).contains(iCraft)) {
-                                Chat.debug(Items.toggle.getOrDefault(p, false) + "_" + Items.per_toggle_craft.getOrDefault(p.getName() + "_" + s, false));
-                                List<String> ingredient = getIngredient().get(iCraft);
-                                HashMap<ItemStack, Integer> ingredients = Items.getIngredients(p, ingredient);
-                                ingredients.forEach((itemStack, integer) -> {
-                                    int craftAmount = ingredients.get(itemStack);
-                                    Chat.debug("craftAmount: " + craftAmount);
-                                    int playerAmount = Items.getPlayerAmount(p, itemStack);
-                                    Chat.debug("playerAmount: " + playerAmount);
-                                    Chat.debug("craft: " + playerAmount / craftAmount);
-                                    if (playerAmount >= craftAmount) {
-                                        for (int i = 1; i <= playerAmount / craftAmount; i++) {
-                                            Chat.debug("craftTimes: " + i);
-                                            if (Items.checkCraftIngredient(p, ingredient, getRequiredAll().get(iCraft))) {
-                                                p.getInventory().addItem(Items.generateItem(p, iCraft));
+        if (p != null)
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    for (String iCraft : itemCraft) {
+                        Chat.debug("iCraft: " + iCraft);
+                        Items.toggle_craft.forEach((s, s2) -> {
+                            Chat.debug("tCraft: " + s);
+                            Chat.debug("tCraft status: " + Items.per_toggle_craft.getOrDefault(p.getName() + "_" + s, false));
+                            Chat.debug("tCraft list status: " + listCrafting.get(s).contains(iCraft));
+                            if (Items.toggle.getOrDefault(p, false) || CraftCheck.perToggleCraft(Items.per_toggle_craft.getOrDefault(p.getName() + "_" + s, false))) {
+                                if (getListCrafting().get(s).contains(iCraft)) {
+                                    Chat.debug(Items.toggle.getOrDefault(p, false) + "_" + Items.per_toggle_craft.getOrDefault(p.getName() + "_" + s, false));
+                                    List<String> ingredient = getIngredient().get(iCraft);
+                                    HashMap<ItemStack, Integer> ingredients = Items.getIngredients(p, ingredient);
+                                    ingredients.forEach((itemStack, integer) -> {
+                                        int craftAmount = ingredients.get(itemStack);
+                                        Chat.debug("craftAmount: " + craftAmount);
+                                        int playerAmount = Items.getPlayerAmount(p, itemStack);
+                                        Chat.debug("playerAmount: " + playerAmount);
+                                        Chat.debug("craft: " + playerAmount / craftAmount);
+                                        if (playerAmount >= craftAmount) {
+                                            for (int i = 1; i <= playerAmount / craftAmount; i++) {
+                                                Chat.debug("craftTimes: " + i);
+                                                if (Items.checkCraftIngredient(p, ingredient, getRequiredAll().get(iCraft))) {
+                                                    p.getInventory().addItem(Items.generateItem(p, iCraft));
+                                                }
                                             }
                                         }
-                                    }
-                                });
+                                    });
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
-            }
-        }.runTaskAsynchronously(StackCraft.getStackCraft());
+            }.runTaskAsynchronously(StackCraft.getStackCraft());
     }
 }
