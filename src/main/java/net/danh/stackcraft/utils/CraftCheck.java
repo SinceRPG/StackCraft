@@ -15,7 +15,7 @@ import java.util.Objects;
 
 public class CraftCheck {
 
-    private static HashMap<String, List<String>> listCrafting = new HashMap<>();
+    private static final HashMap<String, List<String>> listCrafting = new HashMap<>();
     private static List<String> itemCraft = new ArrayList<>();
     private static HashMap<String, List<String>> ingredient = new HashMap<>();
     private static HashMap<String, Boolean> requiredAll = new HashMap<>();
@@ -92,6 +92,14 @@ public class CraftCheck {
                             Chat.debug("tCraft status: " + Items.per_toggle_craft.getOrDefault(p.getName() + "_" + s, false));
                             Chat.debug("tCraft list status: " + listCrafting.get(s).contains(iCraft));
                             if (Items.toggle.getOrDefault(p, false) || CraftCheck.perToggleCraft(Items.per_toggle_craft.getOrDefault(p.getName() + "_" + s, false))) {
+                                if (!p.hasPermission("stc.toggle." + s))
+                                    if (!p.hasPermission("stc.toggle")) {
+                                        if (Items.per_toggle_craft.containsKey(p.getName() + "_" + s) && Items.per_toggle_craft.get(p.getName() + "_" + s))
+                                            Items.per_toggle_craft.replace(p.getName() + "_" + s, false);
+                                        if (Items.toggle.containsKey(p) && Items.toggle.get(p))
+                                            Items.toggle.replace(p, false);
+                                        return;
+                                    }
                                 if (getListCrafting().get(s).contains(iCraft)) {
                                     Chat.debug(Items.toggle.getOrDefault(p, false) + "_" + Items.per_toggle_craft.getOrDefault(p.getName() + "_" + s, false));
                                     List<String> ingredient = getIngredient().get(iCraft);
