@@ -6,6 +6,7 @@ import net.danh.stackcraft.cmd.smallCMD.SmallToggle;
 import net.danh.stackcraft.events.BlockBreak;
 import net.danh.stackcraft.events.EntityDeath;
 import net.danh.stackcraft.events.JoinQuit;
+import net.danh.stackcraft.events.PickupItem;
 import net.danh.stackcraft.placeholder.STC_PAPI;
 import net.danh.stackcraft.playerdata.PlayerData;
 import net.danh.stackcraft.resources.Files;
@@ -77,7 +78,7 @@ public final class StackCraft extends JavaPlugin {
         SimpleConfigurationManager.register(stackCraft);
         Files.loadFiles();
         Files.reloadFiles();
-        registerEvents(new BlockBreak(), new EntityDeath(), new JoinQuit());
+        registerEvents(new BlockBreak(), new EntityDeath(), new JoinQuit(), new PickupItem());
         new STC_CMD();
         if (getServer().getPluginManager().getPlugin("MMOItems") != null) {
             isMMOItemsInstalled = true;

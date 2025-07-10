@@ -96,8 +96,10 @@ public class CraftCheck {
                                     if (!p.hasPermission("stc.toggle")) {
                                         if (Items.per_toggle_craft.containsKey(p.getName() + "_" + s) && Items.per_toggle_craft.get(p.getName() + "_" + s))
                                             Items.per_toggle_craft.replace(p.getName() + "_" + s, false);
+                                        else Items.per_toggle_craft.put(p.getName() + "_" + s, false);
                                         if (Items.toggle.containsKey(p) && Items.toggle.get(p))
                                             Items.toggle.replace(p, false);
+                                        else Items.toggle.put(p, false);
                                         return;
                                     }
                                 if (getListCrafting().get(s).contains(iCraft)) {
