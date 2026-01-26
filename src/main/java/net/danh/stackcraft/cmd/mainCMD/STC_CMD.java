@@ -54,7 +54,7 @@ public class STC_CMD extends CMDBase {
 
                 boolean defaultPer = Files.getConfig().getBoolean("default_toggle_item.per", false);
                 Items.toggle_craft.forEach((key, val) -> Bukkit.getOnlinePlayers().forEach(p -> {
-                    Items.per_toggle_craft.putIfAbsent(p.getName() + "_" + key, defaultPer);
+                    Items.per_toggle_craft.put(p.getName() + "_" + key, defaultPer);
                 }));
 
                 CraftCheck.loadCrafting();
