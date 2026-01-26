@@ -26,7 +26,7 @@ public class Chat {
     }
 
     public static void debug(String message) {
-        if (Files.getConfig().getBoolean("settings.debug")) StackCraft.getStackCraft().getLogger().warning(message);
+        if (Files.getConfig().getBoolean("settings.debug")) StackCraft.get().getLogger().warning(message);
     }
 
     public static @NotNull Component colorize(String message) {

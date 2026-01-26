@@ -28,47 +28,54 @@ public class STC_CMD extends CMDBase {
                 if (c.hasPermission("stc.admin")) {
                     Chat.sendMessage(c, Files.getMessage().getStringList("admin.help"));
                 }
-
                 Chat.sendMessage(c, Files.getMessage().getStringList("user.help"));
             }
-            if (c.hasPermission("stc.admin")) {
-                if (args[0].equalsIgnoreCase("reload")) {
-                    Files.reloadFiles();
-                    for (String id : Items.full_toggle_craft.keySet()) {
-                        new SmallToggle(id, Items.full_toggle_craft.get(id)).removeCommand();
-                    }
-                    Items.full_toggle_craft.clear();
-                    Items.toggle_craft.clear();
+
+            if (c.hasPermission("stc.admin") && args[0].equalsIgnoreCase("reload")) {
+                Files.reloadFiles();
+
+                Items.full_toggle_craft.forEach((alias, id) -> new SmallToggle(alias, id).removeCommand());
+                Items.full_toggle_craft.clear();
+                Items.toggle_craft.clear();
+
+                if (Files.getConfig().contains("toggle")) {
                     for (String item_list : Objects.requireNonNull(Files.getConfig().getConfigurationSection("toggle")).getKeys(false)) {
                         String id = Files.getConfig().getString("toggle." + item_list + ".command.alias");
                         boolean register = Files.getConfig().getBoolean("toggle." + item_list + ".command.register");
-                        if (register) {
+
+                        if (register && id != null) {
                             new SmallToggle(id, item_list).addCommand();
                         }
+
                         Items.toggle_craft.put(item_list, item_list);
-                        Items.full_toggle_craft.put(id, item_list);
-                        Items.toggle_craft.forEach((s, s2) -> Bukkit.getOnlinePlayers().forEach(p -> {
-                            if (!Items.per_toggle_craft.containsKey(p.getName() + "_" + s)) {
-                                Items.per_toggle_craft.put(p.getName() + "_" + s, Files.getConfig().getBoolean("default_toggle_item.per", false));
-                            }
-                        }));
+                        if (id != null) Items.full_toggle_craft.put(id, item_list);
                     }
-                    CraftCheck.loadCrafting();
-                    Chat.sendMessage(c, Files.getMessage().getString("admin.reload_files"));
                 }
+
+                boolean defaultPer = Files.getConfig().getBoolean("default_toggle_item.per", false);
+                Items.toggle_craft.forEach((key, val) -> Bukkit.getOnlinePlayers().forEach(p -> {
+                    Items.per_toggle_craft.putIfAbsent(p.getName() + "_" + key, defaultPer);
+                }));
+
+                CraftCheck.loadCrafting();
+
+                Chat.sendMessage(c, Files.getMessage().getString("admin.reload_files"));
             }
-            if (c.hasPermission("stc.toggle")) {
-                if (c instanceof Player) {
-                    if (args[0].equalsIgnoreCase("toggle")) {
-                        Player p = (Player) c;
-                        Items.toggle.replace(p, !Items.toggle.get(p));
-                        for (String item : Objects.requireNonNull(Files.getConfig().getConfigurationSection("toggle")).getKeys(false)) {
-                            Items.per_toggle_craft.replace(p.getName() + "_" + item, Items.toggle.get(p));
-                        }
-                        p.sendMessage(Chat.colorize(Objects.requireNonNull(Files.getMessage().getString("user.toggle")).replace("#status#", Items.getStatus(p, null))));
+
+            if (c.hasPermission("stc.toggle") && c instanceof Player) {
+                if (args[0].equalsIgnoreCase("toggle")) {
+                    Player p = (Player) c;
+                    boolean newState = !Items.toggle.getOrDefault(p, false);
+                    Items.toggle.put(p, newState);
+
+                    for (String item : Items.toggle_craft.keySet()) {
+                        Items.per_toggle_craft.put(p.getName() + "_" + item, newState);
                     }
+
+                    p.sendMessage(Chat.colorize(Objects.requireNonNull(Files.getMessage().getString("user.toggle"))
+                            .replace("#status#", Items.getStatus(p, null))));
                 }
-            } else {
+            } else if (!c.hasPermission("stc.toggle") && !c.hasPermission("stc.admin")) {
                 Chat.sendMessage(c, Files.getMessage().getString("user.permission"));
             }
         }
