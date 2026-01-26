@@ -1,5 +1,6 @@
 package net.danh.stackcraft;
 
+import lombok.Getter;
 import net.danh.stackcraft.api.SCAPI;
 import net.danh.stackcraft.cmd.mainCMD.STC_CMD;
 import net.danh.stackcraft.events.PlayerEvents;
@@ -15,44 +16,23 @@ import java.util.logging.Level;
 
 public final class StackCraft extends JavaPlugin {
     private static StackCraft instance;
+    @Getter
     private static boolean isMMOItemsInstalled = false;
+    @Getter
     private static boolean isItemsAdderInstalled = false;
+    @Getter
     private static boolean isOraxenInstalled = false;
+    @Getter
     private static boolean isExecutableItemsInstalled = false;
+    @Getter
     private static boolean isNexoInstalled = false;
+    @Getter
     private static boolean isItemEditInstalled = false;
+    @Getter
     private static boolean isMythicInstalled = false;
 
     public static StackCraft get() {
         return instance;
-    }
-
-    public static boolean isMMOItemsInstalled() {
-        return isMMOItemsInstalled;
-    }
-
-    public static boolean isItemsAdderInstalled() {
-        return isItemsAdderInstalled;
-    }
-
-    public static boolean isOraxenInstalled() {
-        return isOraxenInstalled;
-    }
-
-    public static boolean isExecutableItemsInstalled() {
-        return isExecutableItemsInstalled;
-    }
-
-    public static boolean isMythicInstalled() {
-        return isMythicInstalled;
-    }
-
-    public static boolean isNexoInstalled() {
-        return isNexoInstalled;
-    }
-
-    public static boolean isItemEditInstalled() {
-        return isItemEditInstalled;
     }
 
     @Override
@@ -77,9 +57,7 @@ public final class StackCraft extends JavaPlugin {
 
         // Task Auto-Craft định kỳ (cho người chơi AFK hoặc đứng gần farm)
         if (Files.getConfig().getBoolean("settings.auto_craft_schedule")) {
-            Bukkit.getScheduler().runTaskTimer(this, () -> {
-                Bukkit.getOnlinePlayers().forEach(CraftCheck::addToQueue);
-            }, 20L, 20L);
+            Bukkit.getScheduler().runTaskTimer(this, () -> Bukkit.getOnlinePlayers().forEach(CraftCheck::addToQueue), 20L, 20L);
         }
 
         if (!SCAPI.isPremium()) {
