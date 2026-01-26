@@ -22,7 +22,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.14.0</version>
+				<version>3.14.1</version>
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
@@ -31,7 +31,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.6.0</version>
+				<version>3.6.1</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -43,7 +43,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
-				<version>3.4.1</version>
+				<version>3.5.0</version>
 				<executions>
 					<execution>
 						<id>auto-clean</id>
@@ -92,7 +92,7 @@
 		<repository>
 			<id>oraxen</id>
 			<name>Oraxen Repository</name>
-			<url>https://repo.oraxen.com/releases/</url>
+			<url>https://repo.oraxen.com/releases</url>
 		</repository>
 		<repository>
 			<id>nexomc-releases</id>
@@ -109,7 +109,7 @@
 		<dependency>
 			<groupId>io.papermc.paper</groupId>
 			<artifactId>paper-api</artifactId>
-			<version>1.21.4-R0.1-SNAPSHOT</version>
+			<version>1.20.4-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -127,28 +127,21 @@
 		<dependency>
 			<groupId>com.github.emanondev</groupId>
 			<artifactId>ItemEdit</artifactId>
-			<version>3.7.0</version>
+			<version>3.7.8</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/libs/ItemEdit.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>com.github.LoneDev6</groupId>
 			<artifactId>api-itemsadder</artifactId>
-			<version>4.0.8</version>
+			<version>4.0.15</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/libs/ItemsAdder.jar</systemPath>
 		</dependency>
 		<dependency>
-			<groupId>LoneLibs</groupId>
-			<artifactId>api-LoneLibs</artifactId>
-			<version>1.0.65</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/libs/LoneLibs.jar</systemPath>
-		</dependency>
-		<dependency>
 			<groupId>io.lumine</groupId>
 			<artifactId>Mythic-Dist</artifactId>
-			<version>5.8.1-SNAPSHOT</version>
+			<version>5.11.2-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -160,7 +153,7 @@
 		<dependency>
 			<groupId>com.nexomc</groupId>
 			<artifactId>nexo</artifactId>
-			<version>1.0.0</version>
+			<version>1.18.0</version>
 			<scope>provided</scope>
 			<exclusions>
 				<exclusion>
@@ -172,7 +165,7 @@
 		<dependency>
 			<groupId>io.th0rgal</groupId>
 			<artifactId>oraxen</artifactId>
-			<version>1.189.0</version>
+			<version>1.205.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>me.gabytm.util</groupId>
@@ -224,7 +217,7 @@
 		<dependency>
 			<groupId>com.ssomar.score</groupId>
 			<artifactId>SCore</artifactId>
-			<version>latest</version>
+			<version>5.26.1.25</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/libs/SCore.jar</systemPath>
 		</dependency>
