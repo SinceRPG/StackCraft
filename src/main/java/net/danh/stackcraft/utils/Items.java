@@ -2,14 +2,10 @@ package net.danh.stackcraft.utils;
 
 import com.nexomc.nexo.api.NexoItems;
 import com.ssomar.score.api.executableitems.ExecutableItemsAPI;
-import com.ssomar.score.api.executableitems.config.ExecutableItemInterface;
 import dev.lone.itemsadder.api.CustomStack;
 import emanondev.itemedit.ItemEdit;
-import emanondev.itemedit.storage.ServerStorage;
 import io.lumine.mythic.bukkit.MythicBukkit;
-import io.lumine.mythic.core.items.MythicItem;
 import io.th0rgal.oraxen.api.OraxenItems;
-import io.th0rgal.oraxen.items.ItemBuilder;
 import net.Indyuce.mmoitems.MMOItems;
 import net.danh.stackcraft.StackCraft;
 import net.danh.stackcraft.resources.Chat;
@@ -20,13 +16,10 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Items {
 
@@ -36,319 +29,118 @@ public class Items {
     public static HashMap<String, Boolean> per_toggle_craft = new HashMap<>();
 
     public static String getStatus(Player p, String item) {
-        if (item == null) {
-            if (toggle.get(p)) {
-                return Files.getMessage().getString("user.status.status_on");
-            } else return Files.getMessage().getString("user.status.status_off");
-        } else {
-            if (Items.per_toggle_craft.get(p.getName() + "_" + item)) {
-                return Files.getMessage().getString("user.status.status_on");
-            } else return Files.getMessage().getString("user.status.status_off");
-        }
+        boolean isOn = (item == null)
+                ? toggle.getOrDefault(p, false)
+                : per_toggle_craft.getOrDefault(p.getName() + "_" + item, false);
+        return isOn ? Files.getMessage().getString("user.status.status_on")
+                : Files.getMessage().getString("user.status.status_off");
     }
 
-//    public static boolean checkToggleItem(@NotNull Player p, String itemCraft) {
-//        AtomicBoolean checkToggle = new AtomicBoolean(false);
-//        for (ItemStack item : p.getInventory().getContents()) {
-//            for (String toggle_item : Objects.requireNonNull(Files.getConfig().getConfigurationSection("toggle")).getKeys(false)) {
-//                List<String> itemCraftList = Files.getConfig().getStringList("toggle." + toggle_item + ".contain");
-//                String[] toggleItemSplit = Objects.requireNonNull(Files.getConfig().getString("toggle." + toggle_item + ".item")).split(";");
-//                if (StackCraft.isIsMMOItemsInstalled() && toggleItemSplit[0].equalsIgnoreCase("MMOITEMS")) {
-//                    NBTItem nbtItem = NBTItem.get(item);
-//                    if (nbtItem.hasType() && nbtItem.getType().equalsIgnoreCase(toggleItemSplit[1])) {
-//                        if (nbtItem.getString("MMOITEMS_ITEM_ID").equalsIgnoreCase(toggleItemSplit[2])) {
-//                            checkToggle.set(itemCraftList.contains(itemCraft));
-//                        }
-//                    }
-//                } else if (StackCraft.isIsItemsAdderInstalled() && toggleItemSplit[0].equalsIgnoreCase("ITEMSADDER")) {
-//                    if (CustomStack.isInRegistry(toggleItemSplit[1])) {
-//                        CustomStack customStack = CustomStack.byItemStack(item);
-//                        if (customStack != null) {
-//                            if (customStack.getId().equalsIgnoreCase(toggleItemSplit[1])) {
-//                                checkToggle.set(itemCraftList.contains(itemCraft));
-//                            }
-//                        }
-//                    }
-//                } else if (StackCraft.isIsOraxenInstalled() && toggleItemSplit[0].equalsIgnoreCase("ORAXEN")) {
-//                    if (OraxenItems.exists(toggleItemSplit[1])) {
-//                        if (OraxenItems.getIdByItem(item) != null) {
-//                            if (OraxenItems.getIdByItem(item).equalsIgnoreCase(toggleItemSplit[1])) {
-//                                checkToggle.set(itemCraftList.contains(itemCraft));
-//                            }
-//                        }
-//                    }
-//                } else if (StackCraft.isExecutableItemsInstalled() && toggleItemSplit[0].equalsIgnoreCase("EXECUTABLEITEMS")) {
-//                    if (ExecutableItemsAPI.getExecutableItemsManager().isValidID(toggleItemSplit[1])) {
-//                        Optional<ExecutableItemInterface> stack = ExecutableItemsAPI.getExecutableItemsManager().getExecutableItem(item);
-//                        if (stack.isPresent()) {
-//                            if (stack.get().getId().equalsIgnoreCase(toggleItemSplit[1])) {
-//                                checkToggle.set(itemCraftList.contains(itemCraft));
-//                            }
-//                        }
-//                    }
-//                } else if (StackCraft.isIsMythicInstalled() && toggleItemSplit[0].equalsIgnoreCase("MYTHICMOBS")) {
-//                    if (MythicBukkit.inst().getItemManager().isMythicItem(item)) {
-//                        if (MythicBukkit.inst().getItemManager().getMythicTypeFromItem(item).equalsIgnoreCase(toggleItemSplit[1])) {
-//                            checkToggle.set(itemCraftList.contains(itemCraft));
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        return checkToggle.get();
-//    }
+    @Nullable
+    public static ItemStack parseItem(String itemString) {
+        try {
+            String[] split = itemString.split(";");
+            if (split.length < 2) return null;
 
-    public static ItemStack generateItem(Player p, @NotNull String itemCraft) {
-        Chat.debug("GI: " + itemCraft);
-        ItemStack itemStack = null;
-        if (itemCraft.split(";")[0].equalsIgnoreCase("VANILLA")) {
-            Material material = Material.getMaterial(itemCraft.split(";")[1]);
-            if (material != Material.AIR && material != null) {
-                int amount = Number.getInteger(itemCraft.split(";")[2]);
-                itemStack = new ItemStack(material, amount);
-            }
-        } else if (StackCraft.isMMOItemsInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("MMOITEMS")) {
-            String type = itemCraft.split(";")[1];
-            String id = itemCraft.split(";")[2];
-            String amount = itemCraft.split(";")[3];
-            ItemStack item = MMOItems.plugin.getItem(type, id);
-            Chat.debug("MMOItems GI: " + (item != null));
-            if (item != null) {
-                item.setAmount(Number.getInteger(amount));
-                itemStack = item;
-            }
-        } else if (StackCraft.isItemsAdderInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("ITEMSADDER")) {
-            String id = itemCraft.split(";")[1];
-            String amount = itemCraft.split(";")[2];
-            if (CustomStack.isInRegistry(id)) {
-                CustomStack stack = CustomStack.getInstance(id);
-                Chat.debug("ItemsAdder GI: " + (stack != null));
-                if (stack != null) {
-                    itemStack = stack.getItemStack();
-                    itemStack.setAmount(Number.getInteger(amount));
-                }
-            }
-        } else if (StackCraft.isOraxenInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("ORAXEN")) {
-            String id = itemCraft.split(";")[1];
-            String amount = itemCraft.split(";")[2];
-            Chat.debug("Oraxen GI: " + (OraxenItems.exists(id)));
-            if (OraxenItems.exists(id)) {
-                ItemBuilder stack = OraxenItems.getItemById(id);
-                Chat.debug("Oraxen GI: " + (stack != null));
-                if (stack != null) {
-                    itemStack = stack.build();
-                    itemStack.setAmount(Number.getInteger(amount));
-                }
-            }
-        } else if (StackCraft.isExecutableItemsInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("EXECUTABLEITEMS")) {
-            String id = itemCraft.split(";")[1];
-            String amount = itemCraft.split(";")[2];
-            Chat.debug("ExecutableItems GI: " + (ExecutableItemsAPI.getExecutableItemsManager().isValidID(id)));
-            if (ExecutableItemsAPI.getExecutableItemsManager().isValidID(id)) {
-                Optional<ExecutableItemInterface> stack = ExecutableItemsAPI.getExecutableItemsManager().getExecutableItem(id);
-                Chat.debug("ExecutableItems GI: " + (stack.isPresent()));
-                if (stack.isPresent()) {
-                    itemStack = stack.get().buildItem(Number.getInteger(amount), Optional.of(p));
-                }
-            }
-        } else if (StackCraft.isNexoInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("NEXO")) {
-            String id = itemCraft.split(";")[1];
-            String amount = itemCraft.split(";")[2];
-            Chat.debug("Nexo GI: " + (NexoItems.itemFromId(id) != null));
-            if (NexoItems.itemFromId(id) != null) {
-                com.nexomc.nexo.items.ItemBuilder itemBuilder = NexoItems.itemFromId(id);
-                Chat.debug("Nexo GI: " + (itemBuilder != null));
-                if (itemBuilder != null) {
-                    itemStack = itemBuilder.build();
-                    itemStack.setAmount(Integer.parseInt(amount));
-                }
-            }
-        } else if (StackCraft.isItemEditInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("ITEMEDIT")) {
-            String id = itemCraft.split(";")[1];
-            String amount = itemCraft.split(";")[2];
-            ServerStorage storage = ItemEdit.get().getServerStorage();
-            Chat.debug("ItemEdit GI: " + (storage.getItem(id) != null));
-            if (storage.getItem(id) != null) {
-                ItemStack item = storage.getItem(id);
-                Chat.debug("ItemEdit GI: " + (item != null));
-                if (item != null) {
-                    item.setAmount(Integer.parseInt(amount));
-                    itemStack = item;
-                }
-            }
-        } else if (StackCraft.isMythicInstalled() && itemCraft.split(";")[0].equalsIgnoreCase("MYTHICMOBS")) {
-            String id = itemCraft.split(";")[1];
-            String amount = itemCraft.split(";")[2];
-            Optional<MythicItem> stack = MythicBukkit.inst().getItemManager().getItem(id);
-            Chat.debug("MythicMobs GI: " + (stack.isPresent()));
-            if (stack.isPresent()) {
-                itemStack = stack.get().getCachedBaseItem().add(Number.getInteger(amount));
-            }
-        }
-        return itemStack;
-    }
+            String type = split[0].toUpperCase();
+            String id = split[1];
+            ItemStack item = null;
 
-
-    public static boolean checkCraftIngredient(Player p, List<String> ingredientsString, Boolean requiredAll) {
-        Chat.debug(p.getName() + "_" + ingredientsString + "_" + requiredAll);
-        HashMap<ItemStack, Integer> ingredients = Items.getIngredients(p, ingredientsString);
-        HashMap<ItemStack, Boolean> ingredientsCheck = new HashMap<>();
-        AtomicBoolean checkIngredients = new AtomicBoolean(false);
-        for (ItemStack itemStack : ingredients.keySet()) {
-            int craftAmount = ingredients.get(itemStack);
-            int playerAmount = getPlayerAmount(p, itemStack);
-            Chat.debug(itemStack + "_" + (playerAmount >= craftAmount));
-            if (playerAmount >= craftAmount) {
-                if (!requiredAll) {
-                    removeItems(p, itemStack, craftAmount);
-                    checkIngredients.set(true);
-                    return checkIngredients.get();
-                } else ingredientsCheck.put(itemStack, true);
+            if (type.equals("VANILLA")) {
+                Material mat = Material.getMaterial(id);
+                if (mat != null) item = new ItemStack(mat);
             } else {
-                if (requiredAll) ingredientsCheck.put(itemStack, false);
+                item = getCustomItem(type, id, split);
             }
-        }
-        if (requiredAll) {
-            AtomicInteger numCountIngredients = new AtomicInteger(0);
-            for (ItemStack itemStack : ingredientsCheck.keySet()) {
-                if (ingredientsCheck.get(itemStack)) {
-                    numCountIngredients.addAndGet(1);
-                    Chat.debug(String.valueOf(numCountIngredients.get()));
-                }
-            }
-            Chat.debug(String.valueOf(numCountIngredients.get() == ingredientsCheck.size()));
-            if (numCountIngredients.get() == ingredientsCheck.size()) {
-                for (ItemStack itemStack : ingredientsCheck.keySet()) {
-                    Chat.debug(String.valueOf(itemStack));
-                    removeItems(p, itemStack, ingredients.get(itemStack));
-                }
-                checkIngredients.set(true);
-            }
-        }
-        return checkIngredients.get();
-    }
 
-    public static @NotNull HashMap<ItemStack, Integer> getIngredients(Player p, @NotNull List<String> ingredientsString) {
-        HashMap<ItemStack, Integer> itemStacks = new HashMap<>();
-        for (String ingredientString : ingredientsString) {
-            Chat.debug(ingredientString);
-            String[] strings = ingredientString.split(";");
-            if (strings.length >= 3) {
-                if (strings[0].equalsIgnoreCase("VANILLA")) {
-                    Material material = Material.getMaterial(strings[1]);
-                    if (material != Material.AIR && material != null) {
-                        int amount = Number.getInteger(strings[2]);
-                        ItemStack itemStack = new ItemStack(material);
-                        itemStacks.put(itemStack, amount);
-                    }
-                } else if (StackCraft.isMMOItemsInstalled() && strings[0].equalsIgnoreCase("MMOITEMS")) {
-                    String type = strings[1];
-                    String id = strings[2];
-                    String amount = strings[3];
-                    if (MMOItems.plugin.getItem(type, id) != null) {
-                        itemStacks.put(MMOItems.plugin.getItem(type, id), Number.getInteger(amount));
-                    }
-                } else if (StackCraft.isItemsAdderInstalled() && strings[0].equalsIgnoreCase("ITEMSADDER")) {
-                    String id = strings[1];
-                    String amount = strings[2];
-                    Chat.debug("ItemAdders: " + (CustomStack.isInRegistry(id)));
-                    if (CustomStack.isInRegistry(id)) {
-                        CustomStack stack = CustomStack.getInstance(id);
-                        if (stack != null) {
-                            itemStacks.put(stack.getItemStack(), Number.getInteger(amount));
-                        }
-                    }
-                } else if (StackCraft.isOraxenInstalled() && strings[0].equalsIgnoreCase("ORAXEN")) {
-                    String id = strings[1];
-                    String amount = strings[2];
-                    Chat.debug("Oraxen: " + (OraxenItems.exists(id)));
-                    if (OraxenItems.exists(id)) {
-                        ItemBuilder stack = OraxenItems.getItemById(id);
-                        if (stack != null) {
-                            itemStacks.put(stack.build(), Number.getInteger(amount));
-                        }
-                    }
-                } else if (StackCraft.isNexoInstalled() && strings[0].equalsIgnoreCase("NEXO")) {
-                    String id = strings[1];
-                    String amount = strings[2];
-                    Chat.debug("Nexo: " + (NexoItems.itemFromId(id) != null));
-                    if (NexoItems.itemFromId(id) != null) {
-                        com.nexomc.nexo.items.ItemBuilder stack = NexoItems.itemFromId(id);
-                        if (stack != null) {
-                            itemStacks.put(stack.build(), Number.getInteger(amount));
-                        }
-                    }
-                } else if (StackCraft.isItemEditInstalled() && strings[0].equalsIgnoreCase("ITEMEDIT")) {
-                    String id = strings[1];
-                    String amount = strings[2];
-                    ServerStorage storage = ItemEdit.get().getServerStorage();
-                    Chat.debug("ItemEdit: " + (storage.getItem(id) != null));
-                    if (storage.getItem(id) != null) {
-                        ItemStack item = storage.getItem(id);
-                        if (item != null) {
-                            itemStacks.put(item, Number.getInteger(amount));
-                        }
-                    }
-                } else if (StackCraft.isExecutableItemsInstalled() && strings[0].equalsIgnoreCase("EXECUTABLEITEMS")) {
-                    String id = strings[1];
-                    String amount = strings[2];
-                    Chat.debug("ExecutableItems: " + (ExecutableItemsAPI.getExecutableItemsManager().isValidID(id)));
-                    if (ExecutableItemsAPI.getExecutableItemsManager().isValidID(id)) {
-                        Optional<ExecutableItemInterface> stack = ExecutableItemsAPI.getExecutableItemsManager().getExecutableItem(id);
-                        stack.ifPresent(executableItemInterface -> itemStacks.put(executableItemInterface.buildItem(1, Optional.of(p)), Number.getInteger(amount)));
-                    }
-                } else if (StackCraft.isMythicInstalled() && strings[0].equalsIgnoreCase("MYTHICMOBS")) {
-                    String id = strings[1];
-                    String amount = strings[2];
-                    Optional<MythicItem> stack = MythicBukkit.inst().getItemManager().getItem(id);
-                    Chat.debug("MythicMobs: " + stack.isPresent());
-                    stack.ifPresent(mythicItem -> itemStacks.put(mythicItem.getCachedBaseItem().add(1), Number.getInteger(amount)));
-                }
-            }
-        }
-        return itemStacks;
-    }
-
-    public static int getPlayerAmount(@NotNull HumanEntity player, ItemStack item) {
-        final PlayerInventory inv = player.getInventory();
-        final ItemStack[] items = inv.getContents();
-        int c = 0;
-        for (final ItemStack is : items) {
-            if (is != null) {
-                if (is.isSimilar(item)) {
-                    c += is.getAmount();
-                }
-            }
-        }
-        return c;
-    }
-
-    public static void removeItems(@NotNull Player player, ItemStack item, long amount) {
-        item = item.clone();
-        final PlayerInventory inv = player.getInventory();
-        final ItemStack[] items = inv.getContents();
-        int c = 0;
-        boolean change = false;
-        for (int i = 0; i < items.length; ++i) {
-            final ItemStack is = items[i];
-            if (is != null) {
-                if (is.isSimilar(item)) {
-                    if (c + is.getAmount() > amount) {
-                        final long canDelete = amount - c;
-                        is.setAmount((int) (is.getAmount() - canDelete));
-                        items[i] = is;
-                        break;
-                    }
-                    c += is.getAmount();
-                    items[i] = null;
-                    change = true;
-                }
-            }
-        }
-        if (change) {
-            inv.setContents(items);
-            player.updateInventory();
+            if (item != null) item.setAmount(1);
+            return item;
+        } catch (Exception e) {
+            Chat.debug("Error parsing item: " + itemString + " (" + e.getMessage() + ")");
+            return null;
         }
     }
 
+    private static ItemStack getCustomItem(String type, String id, String[] split) {
+        try {
+            switch (type) {
+                case "MMOITEMS":
+                    if (StackCraft.isMMOItemsInstalled() && split.length >= 3)
+                        return MMOItems.plugin.getItem(split[1], split[2]);
+                case "ITEMSADDER":
+                    if (StackCraft.isItemsAdderInstalled() && CustomStack.isInRegistry(id)) {
+                        CustomStack cs = CustomStack.getInstance(id);
+                        return (cs != null) ? cs.getItemStack() : null;
+                    }
+                    break;
+                case "ORAXEN":
+                    if (StackCraft.isOraxenInstalled() && OraxenItems.exists(id))
+                        return OraxenItems.getItemById(id).build();
+                case "EXECUTABLEITEMS":
+                    if (StackCraft.isExecutableItemsInstalled())
+                        return ExecutableItemsAPI.getExecutableItemsManager().getExecutableItem(id)
+                                .map(ei -> ei.buildItem(1, Optional.empty())).orElse(null);
+                case "NEXO":
+                    if (StackCraft.isNexoInstalled() && NexoItems.itemFromId(id) != null)
+                        return NexoItems.itemFromId(id).build();
+                case "ITEMEDIT":
+                    if (StackCraft.isItemEditInstalled())
+                        return ItemEdit.get().getServerStorage().getItem(id);
+                case "MYTHICMOBS":
+                    if (StackCraft.isMythicInstalled())
+                        return MythicBukkit.inst().getItemManager().getItem(id)
+                                .map(mi -> mi.getCachedBaseItem()).orElse(null);
+            }
+        } catch (NoClassDefFoundError | Exception ex) {
+            Chat.debug("Dependency Error for " + type + ": " + ex.getMessage());
+        }
+        return null;
+    }
+
+    public static int parseAmount(String itemString) {
+        String[] split = itemString.split(";");
+        if (split[0].equalsIgnoreCase("MMOITEMS")) {
+            return split.length >= 4 ? Number.getInteger(split[3]) : 1;
+        }
+        return split.length >= 3 ? Number.getInteger(split[2]) : 1;
+    }
+
+    public static boolean isSameItem(ItemStack i1, ItemStack i2) {
+        if (i1 == null || i2 == null) return false;
+        return i1.isSimilar(i2);
+    }
+
+    public static int getPlayerAmount(HumanEntity player, ItemStack item) {
+        if (item == null) return 0;
+        PlayerInventory inv = player.getInventory();
+        int count = 0;
+        for (ItemStack is : inv.getContents()) {
+            if (is != null && isSameItem(is, item)) {
+                count += is.getAmount();
+            }
+        }
+        return count;
+    }
+
+    public static void removeItems(Player player, ItemStack item, int amount) {
+        if (item == null || amount <= 0) return;
+        PlayerInventory inv = player.getInventory();
+        ItemStack[] contents = inv.getContents();
+        int remaining = amount;
+
+        for (int i = 0; i < contents.length; i++) {
+            ItemStack is = contents[i];
+            if (is != null && isSameItem(is, item)) {
+                if (is.getAmount() > remaining) {
+                    is.setAmount(is.getAmount() - remaining);
+                    remaining = 0;
+                } else {
+                    remaining -= is.getAmount();
+                    contents[i] = null;
+                }
+            }
+            if (remaining <= 0) break;
+        }
+        inv.setContents(contents);
+    }
 }

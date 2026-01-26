@@ -20,13 +20,13 @@ public class STC_PAPI extends PlaceholderExpansion {
     @NotNull
     @Override
     public String getAuthor() {
-        return StackCraft.getStackCraft().getDescription().getAuthors().toString();
+        return StackCraft.get().getDescription().getAuthors().toString();
     }
 
     @NotNull
     @Override
     public String getVersion() {
-        return StackCraft.getStackCraft().getDescription().getVersion();
+        return StackCraft.get().getDescription().getVersion();
     }
 
     @Override

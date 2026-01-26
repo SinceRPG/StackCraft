@@ -10,7 +10,7 @@ import java.util.Objects;
 public abstract class CMDBase implements CommandExecutor, TabCompleter {
 
     public CMDBase(String name) {
-        PluginCommand pluginCommand = StackCraft.getStackCraft().getCommand(name);
+        PluginCommand pluginCommand = StackCraft.get().getCommand(name);
         Objects.requireNonNull(pluginCommand).setExecutor(this);
         pluginCommand.setTabCompleter(this);
     }

@@ -56,7 +56,7 @@ public class PlayerData {
     }
 
     public void create() {
-        playerdataFile = new File(StackCraft.getStackCraft().getDataFolder(), getFileName());
+        playerdataFile = new File(StackCraft.get().getDataFolder(), getFileName());
         if (!playerdataFile.exists()) SimpleConfigurationManager.get().build("", true, getFileName());
         playerdata = new YamlConfiguration();
 

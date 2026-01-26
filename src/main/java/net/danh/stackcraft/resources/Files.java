@@ -1,7 +1,7 @@
 package net.danh.stackcraft.resources;
 
-import net.danh.stackcraft.StackCraft;
 import net.danh.stackcraft.cmd.smallCMD.SmallToggle;
+import net.danh.stackcraft.utils.Items;
 import net.xconfig.bukkit.model.SimpleConfigurationManager;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -19,12 +19,19 @@ public class Files {
 
     public static void reloadFiles() {
         SimpleConfigurationManager.get().reload("config.yml", "message.yml");
-        StackCraft.setIsAutoCraftSchedule(Files.getConfig().getBoolean("settings.auto_craft_schedule"));
-        for (String item_list : Objects.requireNonNull(Files.getConfig().getConfigurationSection("toggle")).getKeys(false)) {
-            String id = Files.getConfig().getString("toggle." + item_list + ".command.alias");
-            boolean register = Files.getConfig().getBoolean("toggle." + item_list + ".command.register");
-            if (register) {
-                new SmallToggle(id, item_list).addCommand();
+        if (Files.getConfig().contains("toggle")) {
+            for (String item_list : Objects.requireNonNull(Files.getConfig().getConfigurationSection("toggle")).getKeys(false)) {
+                String id = Files.getConfig().getString("toggle." + item_list + ".command.alias");
+                boolean register = Files.getConfig().getBoolean("toggle." + item_list + ".command.register");
+
+                if (register && id != null) {
+                    new SmallToggle(id, item_list).addCommand();
+                }
+
+                Items.toggle_craft.put(item_list, item_list);
+                if (id != null) {
+                    Items.full_toggle_craft.put(id, item_list);
+                }
             }
         }
     }

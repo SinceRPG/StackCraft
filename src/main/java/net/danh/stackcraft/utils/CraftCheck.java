@@ -1,131 +1,149 @@
 package net.danh.stackcraft.utils;
 
-import net.danh.stackcraft.StackCraft;
 import net.danh.stackcraft.api.SCAPI;
 import net.danh.stackcraft.resources.Chat;
 import net.danh.stackcraft.resources.Files;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CraftCheck {
 
-    private static final HashMap<String, List<String>> listCrafting = new HashMap<>();
-    private static List<String> itemCraft = new ArrayList<>();
-    private static HashMap<String, List<String>> ingredient = new HashMap<>();
-    private static HashMap<String, Boolean> requiredAll = new HashMap<>();
-
-    public static boolean perToggleCraft(boolean perToggleCraft) {
-        return perToggleCraft && SCAPI.isPremium();
-    }
+    private static final List<Recipe> cachedRecipes = new ArrayList<>();
+    private static final Set<UUID> playerQueue = ConcurrentHashMap.newKeySet();
 
     public static void loadCrafting() {
-        if (!listCrafting.isEmpty())
-            listCrafting.clear();
-        Items.toggle_craft.forEach((s, s2) -> {
-            List<String> list = Files.getConfig().getStringList("toggle." + s + ".contain");
-            Chat.debug("Crafting: " + s + " --> " + list);
-            listCrafting.put(s, list);
-        });
-        loadItemCraft();
-    }
+        cachedRecipes.clear();
+        try {
+            if (!Files.getConfig().contains("toggle")) return;
 
-    private static void loadItemCraft() {
-        if (!itemCraft.isEmpty())
-            itemCraft.clear();
-        for (String iCraft : Objects.requireNonNull(Files.getConfig().getConfigurationSection("craft")).getKeys(false)) {
-            Chat.debug("Craft ID: " + iCraft);
-            itemCraft.add(iCraft);
-        }
-        loadIngredient();
-        loadRequiredAll();
-    }
+            for (String toggleId : Objects.requireNonNull(Files.getConfig().getConfigurationSection("toggle")).getKeys(false)) {
+                List<String> containList = Files.getConfig().getStringList("toggle." + toggleId + ".contain");
 
-    private static void loadIngredient() {
-        if (!ingredient.isEmpty())
-            ingredient.clear();
-        for (String iCraft : itemCraft) {
-            List<String> ing = Files.getConfig().getStringList("craft." + iCraft + ".ingredient");
-            Chat.debug("Ingredient: " + ing);
-            ingredient.put(iCraft, ing);
-        }
-    }
+                for (String itemCraftKey : containList) {
+                    if (!Files.getConfig().contains("craft." + itemCraftKey)) continue;
 
-    private static void loadRequiredAll() {
-        if (!requiredAll.isEmpty())
-            requiredAll.clear();
-        for (String iCraft : itemCraft) {
-            requiredAll.put(iCraft, Files.getConfig().getBoolean("craft." + iCraft + ".required_all", false));
-        }
-    }
+                    boolean requiredAll = Files.getConfig().getBoolean("craft." + itemCraftKey + ".required_all", false);
+                    List<String> ingredientStrings = Files.getConfig().getStringList("craft." + itemCraftKey + ".ingredient");
 
-    public static List<String> getItemCraft() {
-        return itemCraft;
-    }
+                    ItemStack resultItem = Items.parseItem(itemCraftKey);
+                    if (resultItem == null) {
+                        Chat.debug("Invalid result item in config: " + itemCraftKey);
+                        continue;
+                    }
 
-    public static HashMap<String, List<String>> getListCrafting() {
-        return listCrafting;
-    }
+                    List<Ingredient> ingredients = new ArrayList<>();
+                    for (String ingStr : ingredientStrings) {
+                        ItemStack ingItem = Items.parseItem(ingStr);
+                        if (ingItem != null) {
+                            int amount = Items.parseAmount(ingStr);
+                            ingredients.add(new Ingredient(ingItem, amount));
+                        }
+                    }
 
-    public static HashMap<String, List<String>> getIngredient() {
-        return ingredient;
-    }
-
-    public static HashMap<String, Boolean> getRequiredAll() {
-        return requiredAll;
-    }
-
-    public static void craftingCheck(Player p) {
-        if (p != null)
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    for (String iCraft : itemCraft) {
-                        Chat.debug("iCraft: " + iCraft);
-                        Items.toggle_craft.forEach((s, s2) -> {
-                            Chat.debug("tCraft: " + s);
-                            Chat.debug("tCraft status: " + Items.per_toggle_craft.getOrDefault(p.getName() + "_" + s, false));
-                            Chat.debug("tCraft list status: " + listCrafting.get(s).contains(iCraft));
-                            if (Items.toggle.getOrDefault(p, false) || CraftCheck.perToggleCraft(Items.per_toggle_craft.getOrDefault(p.getName() + "_" + s, false))) {
-                                if (!p.hasPermission("stc.toggle." + s))
-                                    if (!p.hasPermission("stc.toggle")) {
-                                        if (Items.per_toggle_craft.containsKey(p.getName() + "_" + s) && Items.per_toggle_craft.get(p.getName() + "_" + s))
-                                            Items.per_toggle_craft.replace(p.getName() + "_" + s, false);
-                                        else Items.per_toggle_craft.put(p.getName() + "_" + s, false);
-                                        if (Items.toggle.containsKey(p) && Items.toggle.get(p))
-                                            Items.toggle.replace(p, false);
-                                        else Items.toggle.put(p, false);
-                                        return;
-                                    }
-                                if (getListCrafting().get(s).contains(iCraft)) {
-                                    Chat.debug(Items.toggle.getOrDefault(p, false) + "_" + Items.per_toggle_craft.getOrDefault(p.getName() + "_" + s, false));
-                                    List<String> ingredient = getIngredient().get(iCraft);
-                                    HashMap<ItemStack, Integer> ingredients = Items.getIngredients(p, ingredient);
-                                    ingredients.forEach((itemStack, integer) -> {
-                                        int craftAmount = ingredients.get(itemStack);
-                                        Chat.debug("craftAmount: " + craftAmount);
-                                        int playerAmount = Items.getPlayerAmount(p, itemStack);
-                                        Chat.debug("playerAmount: " + playerAmount);
-                                        Chat.debug("craft: " + playerAmount / craftAmount);
-                                        if (playerAmount >= craftAmount) {
-                                            for (int i = 1; i <= playerAmount / craftAmount; i++) {
-                                                Chat.debug("craftTimes: " + i);
-                                                if (Items.checkCraftIngredient(p, ingredient, getRequiredAll().get(iCraft))) {
-                                                    p.getInventory().addItem(Items.generateItem(p, iCraft));
-                                                }
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                        });
+                    if (!ingredients.isEmpty()) {
+                        cachedRecipes.add(new Recipe(toggleId, resultItem, ingredients, requiredAll));
                     }
                 }
-            }.runTaskAsynchronously(StackCraft.getStackCraft());
+            }
+            Chat.debug("Loaded " + cachedRecipes.size() + " auto-craft recipes.");
+        } catch (Exception e) {
+            Chat.debug("Error loading crafting recipes: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static void addToQueue(Player p) {
+        if (p != null && p.isOnline()) {
+            playerQueue.add(p.getUniqueId());
+        }
+    }
+
+    public static void processQueue() {
+        if (playerQueue.isEmpty()) return;
+
+        Iterator<UUID> iterator = playerQueue.iterator();
+        while (iterator.hasNext()) {
+            UUID uuid = iterator.next();
+            Player p = Bukkit.getPlayer(uuid);
+            if (p != null && p.isOnline()) {
+                checkPlayerCrafts(p);
+            }
+            iterator.remove();
+        }
+    }
+
+    private static void checkPlayerCrafts(Player p) {
+        boolean globalToggle = Items.toggle.getOrDefault(p, false);
+
+        for (Recipe recipe : cachedRecipes) {
+            String toggleId = recipe.toggleId();
+            boolean perToggle = Items.per_toggle_craft.getOrDefault(p.getName() + "_" + toggleId, false);
+
+            if (!globalToggle && !(SCAPI.isPremium() && perToggle)) continue;
+
+            if (!p.hasPermission("stc.toggle") && !p.hasPermission("stc.toggle." + toggleId)) {
+                if (perToggle) Items.per_toggle_craft.put(p.getName() + "_" + toggleId, false);
+                continue;
+            }
+
+            processCraftingRecipe(p, recipe);
+        }
+    }
+
+    private static void processCraftingRecipe(Player p, Recipe recipe) {
+        if (recipe.requiredAll()) {
+            int maxCrafts = Integer.MAX_VALUE;
+            for (Ingredient ing : recipe.ingredients()) {
+                int playerHas = Items.getPlayerAmount(p, ing.item);
+                if (playerHas < ing.amount) {
+                    maxCrafts = 0;
+                    break;
+                }
+                maxCrafts = Math.min(maxCrafts, playerHas / ing.amount);
+            }
+
+            if (maxCrafts > 0) {
+                performCraft(p, recipe.result(), recipe.ingredients(), maxCrafts);
+            }
+
+        } else {
+            for (Ingredient ing : recipe.ingredients()) {
+                int playerHas = Items.getPlayerAmount(p, ing.item);
+                int crafts = playerHas / ing.amount;
+
+                if (crafts > 0) {
+                    performCraft(p, recipe.result(), Collections.singletonList(ing), crafts);
+                }
+            }
+        }
+    }
+
+    private static void performCraft(Player p, ItemStack result, List<Ingredient> ingredientsToRemove, int times) {
+
+        for (Ingredient ing : ingredientsToRemove) {
+            Items.removeItems(p, ing.item, ing.amount * times);
+        }
+        ItemStack reward = result.clone();
+        reward.setAmount(result.getAmount() * times);
+
+        HashMap<Integer, ItemStack> leftovers = p.getInventory().addItem(reward);
+
+        if (!leftovers.isEmpty()) {
+            leftovers.values().forEach(item ->
+                    p.getWorld().dropItemNaturally(p.getLocation(), item)
+            );
+        }
+
+        p.updateInventory();
+    }
+
+    private record Recipe(String toggleId, ItemStack result, List<Ingredient> ingredients, boolean requiredAll) {
+    }
+
+    private record Ingredient(ItemStack item, int amount) {
     }
 }
