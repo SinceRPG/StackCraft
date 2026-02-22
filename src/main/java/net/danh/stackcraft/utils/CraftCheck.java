@@ -26,7 +26,7 @@ public class CraftCheck {
                 for (String itemCraftKey : containList) {
                     if (!Files.getConfig().contains("craft." + itemCraftKey)) continue;
 
-                    boolean requiredAll = Files.getConfig().getBoolean("craft." + itemCraftKey + ".required_all", false);
+                    boolean requiredAll = Files.getConfig().contains("craft." + itemCraftKey + ".required_all") && Files.getConfig().getBoolean("craft." + itemCraftKey + ".required_all", false);
                     List<String> ingredientStrings = Files.getConfig().getStringList("craft." + itemCraftKey + ".ingredient");
 
                     ItemStack resultItem = Items.parseItem(itemCraftKey);
