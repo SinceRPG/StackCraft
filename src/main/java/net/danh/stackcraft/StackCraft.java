@@ -8,7 +8,6 @@ import net.danh.stackcraft.placeholder.STC_PAPI;
 import net.danh.stackcraft.playerdata.PlayerData;
 import net.danh.stackcraft.resources.Files;
 import net.danh.stackcraft.utils.CraftCheck;
-import net.xconfig.bukkit.model.SimpleConfigurationManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -38,7 +37,8 @@ public final class StackCraft extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        SimpleConfigurationManager.register(instance);
+
+        // Đã xóa dòng SimpleConfigurationManager
         Files.loadFiles();
 
         checkDependencies();

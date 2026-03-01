@@ -1,28 +1,39 @@
 package net.danh.stackcraft.resources;
 
+import net.danh.stackcraft.StackCraft;
 import net.danh.stackcraft.cmd.smallCMD.SmallToggle;
+import net.danh.stackcraft.utils.ConfigUtils;
 import net.danh.stackcraft.utils.Items;
-import net.xconfig.bukkit.model.SimpleConfigurationManager;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Objects;
 
 public class Files {
 
+    private static ConfigUtils config;
+    private static ConfigUtils message;
+
     public static void loadFiles() {
-        SimpleConfigurationManager.get().build("", false, "config.yml", "message.yml", "playerData/example_data.yml");
+        config = new ConfigUtils(StackCraft.get(), "config.yml");
+        message = new ConfigUtils(StackCraft.get(), "message.yml");
+
+        // Tạo file example_data nếu chưa tồn tại
+        new ConfigUtils(StackCraft.get(), "playerData/example_data.yml");
     }
 
     public static void saveFiles() {
-        SimpleConfigurationManager.get().save("config.yml", "message.yml");
+        config.save();
+        message.save();
     }
 
     public static void reloadFiles() {
-        SimpleConfigurationManager.get().reload("config.yml", "message.yml");
-        if (Files.getConfig().contains("toggle")) {
-            for (String item_list : Objects.requireNonNull(Files.getConfig().getConfigurationSection("toggle")).getKeys(false)) {
-                String id = Files.getConfig().getString("toggle." + item_list + ".command.alias");
-                boolean register = Files.getConfig().getBoolean("toggle." + item_list + ".command.register");
+        config.reload();
+        message.reload();
+
+        if (getConfig().contains("toggle")) {
+            for (String item_list : Objects.requireNonNull(getConfig().getConfigurationSection("toggle")).getKeys(false)) {
+                String id = getConfig().getString("toggle." + item_list + ".command.alias");
+                boolean register = getConfig().getBoolean("toggle." + item_list + ".command.register");
 
                 if (register && id != null) {
                     new SmallToggle(id, item_list).addCommand();
@@ -36,11 +47,12 @@ public class Files {
         }
     }
 
+    // Trả về FileConfiguration để các class khác không bị lỗi
     public static FileConfiguration getConfig() {
-        return SimpleConfigurationManager.get().get("config.yml");
+        return config.getConfig();
     }
 
     public static FileConfiguration getMessage() {
-        return SimpleConfigurationManager.get().get("message.yml");
+        return message.getConfig();
     }
 }
