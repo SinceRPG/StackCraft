@@ -3,7 +3,6 @@ package net.danh.stackcraft.playerdata;
 import net.danh.stackcraft.StackCraft;
 import net.danh.stackcraft.resources.Files;
 import net.danh.stackcraft.utils.Items;
-import net.xconfig.bukkit.model.SimpleConfigurationManager;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -57,7 +56,14 @@ public class PlayerData {
 
     public void create() {
         playerdataFile = new File(StackCraft.get().getDataFolder(), getFileName());
-        if (!playerdataFile.exists()) SimpleConfigurationManager.get().build("", true, getFileName());
+        if (!playerdataFile.exists()) {
+            playerdataFile.getParentFile().mkdirs();
+            try {
+                playerdataFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         playerdata = new YamlConfiguration();
 
         try {
