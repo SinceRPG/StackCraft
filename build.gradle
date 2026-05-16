@@ -1,0 +1,47 @@
+plugins {
+    id "java"
+}
+
+group = "net.danh"
+version = "1.8.2"
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+    options.release = 21
+}
+
+dependencies {
+    compileOnly "io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT"
+    compileOnly "net.Indyuce:MMOItems-API:6.10.1-SNAPSHOT"
+    compileOnly "io.lumine:MythicLib-dist:1.7.1-SNAPSHOT"
+    compileOnly "io.lumine:Mythic-Dist:5.12.0"
+    compileOnly "me.clip:placeholderapi:2.12.2"
+    compileOnly "com.nexomc:nexo:1.23"
+    compileOnly "io.th0rgal:oraxen:1.213.0"
+
+    compileOnly files("libs/ItemEdit.jar")
+    compileOnly files("libs/ItemsAdder.jar")
+    compileOnly files("libs/SCore.jar")
+
+    compileOnly "net.kyori:adventure-api:5.1.1"
+    compileOnly "net.kyori:adventure-text-minimessage:5.1.1"
+    compileOnly "net.kyori:adventure-text-serializer-plain:5.1.1"
+}
+
+processResources {
+    filteringCharset = "UTF-8"
+    filesMatching("plugin.yml") {
+        expand(version: project.version)
+    }
+}
+
+jar {
+    archiveBaseName.set(project.name)
+    archiveVersion.set("")
+}
