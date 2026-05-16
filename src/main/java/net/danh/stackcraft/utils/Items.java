@@ -18,22 +18,51 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class Items {
 
-    public static HashMap<Player, Boolean> toggle = new HashMap<>();
-    public static HashMap<String, String> toggle_craft = new HashMap<>();
-    public static HashMap<String, String> full_toggle_craft = new HashMap<>();
-    public static HashMap<String, Boolean> per_toggle_craft = new HashMap<>();
+    public static final ConcurrentMap<UUID, Boolean> toggle = new ConcurrentHashMap<>();
+    public static final ConcurrentMap<String, String> toggle_craft = new ConcurrentHashMap<>();
+    public static final ConcurrentMap<String, String> full_toggle_craft = new ConcurrentHashMap<>();
+    public static final ConcurrentMap<String, Boolean> per_toggle_craft = new ConcurrentHashMap<>();
 
     public static String getStatus(Player p, String item) {
         boolean isOn = (item == null)
-                ? toggle.getOrDefault(p, false)
-                : per_toggle_craft.getOrDefault(p.getName() + "_" + item, false);
+                ? getGlobalToggle(p)
+                : getPerToggle(p, item);
         return isOn ? Files.getMessage().getString("user.status.status_on")
                 : Files.getMessage().getString("user.status.status_off");
+    }
+
+    public static boolean getGlobalToggle(Player player) {
+        return toggle.getOrDefault(player.getUniqueId(), false);
+    }
+
+    public static void setGlobalToggle(Player player, boolean enabled) {
+        toggle.put(player.getUniqueId(), enabled);
+    }
+
+    public static boolean getPerToggle(Player player, String item) {
+        return per_toggle_craft.getOrDefault(getPlayerItemKey(player, item), false);
+    }
+
+    public static void setPerToggle(Player player, String item, boolean enabled) {
+        per_toggle_craft.put(getPlayerItemKey(player, item), enabled);
+    }
+
+    public static void removePlayer(Player player) {
+        UUID uuid = player.getUniqueId();
+        toggle.remove(uuid);
+        String prefix = uuid + "_";
+        per_toggle_craft.keySet().removeIf(key -> key.startsWith(prefix));
+    }
+
+    public static String getPlayerItemKey(Player player, String item) {
+        return player.getUniqueId() + "_" + item;
     }
 
     @Nullable
@@ -67,6 +96,7 @@ public class Items {
                 case "MMOITEMS":
                     if (StackCraft.isMMOItemsInstalled() && split.length >= 3)
                         return MMOItems.plugin.getItem(split[1], split[2]);
+                    break;
                 case "ITEMSADDER":
                     if (StackCraft.isItemsAdderInstalled() && CustomStack.isInRegistry(id)) {
                         CustomStack cs = CustomStack.getInstance(id);
@@ -76,20 +106,28 @@ public class Items {
                 case "ORAXEN":
                     if (StackCraft.isOraxenInstalled() && OraxenItems.exists(id))
                         return OraxenItems.getItemById(id).build();
+                    break;
                 case "EXECUTABLEITEMS":
                     if (StackCraft.isExecutableItemsInstalled())
                         return ExecutableItemsAPI.getExecutableItemsManager().getExecutableItem(id)
                                 .map(ei -> ei.buildItem(1, Optional.empty())).orElse(null);
+                    break;
                 case "NEXO":
                     if (StackCraft.isNexoInstalled() && NexoItems.itemFromId(id) != null)
                         return NexoItems.itemFromId(id).build();
+                    break;
                 case "ITEMEDIT":
                     if (StackCraft.isItemEditInstalled())
                         return ItemEdit.get().getServerStorage().getItem(id);
+                    break;
                 case "MYTHICMOBS":
                     if (StackCraft.isMythicInstalled())
                         return MythicBukkit.inst().getItemManager().getItem(id)
                                 .map(mi -> mi.getCachedBaseItem()).orElse(null);
+                    break;
+                default:
+                    Chat.debug("Unsupported item provider: " + type);
+                    break;
             }
         } catch (NoClassDefFoundError | Exception ex) {
             Chat.debug("Dependency Error for " + type + ": " + ex.getMessage());

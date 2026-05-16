@@ -8,6 +8,8 @@ import java.util.Map;
 
 public abstract class SmallCommands extends Command implements CommandExecutor, TabCompleter {
 
+    private static final String FALLBACK_PREFIX = "stackcraft";
+
     public SmallCommands(String id) {
         super(id);
     }
@@ -16,10 +18,9 @@ public abstract class SmallCommands extends Command implements CommandExecutor, 
         if (getName() != null) {
             CommandMap commandMap;
             try {
-                final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
-                bukkitCommandMap.setAccessible(true);
-                commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
-                commandMap.register(getName(), this);
+                commandMap = getCommandMap();
+                removeKnownCommand(commandMap, getName());
+                commandMap.register(FALLBACK_PREFIX, this);
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -28,22 +29,31 @@ public abstract class SmallCommands extends Command implements CommandExecutor, 
 
     public void removeCommand() {
         if (getName() != null) {
-            Field cMap;
-            Field knownCommands;
             try {
-                cMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
-                cMap.setAccessible(true);
-                knownCommands = SimpleCommandMap.class.getDeclaredField("knownCommands");
-                knownCommands.setAccessible(true);
-                ((Map<String, Command>) knownCommands.get(cMap.get(Bukkit.getServer()))).remove(getName());
-                final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
-                bukkitCommandMap.setAccessible(true);
-                CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
-                this.unregister((CommandMap) cMap.get(Bukkit.getServer()));
+                CommandMap commandMap = getCommandMap();
+                removeKnownCommand(commandMap, getName());
+                removeKnownCommand(commandMap, FALLBACK_PREFIX + ":" + getName());
                 this.unregister(commandMap);
-            } catch (Exception ex) {
+            } catch (NoSuchFieldException | IllegalAccessException ex) {
                 ex.printStackTrace();
             }
+        }
+    }
+
+    private CommandMap getCommandMap() throws NoSuchFieldException, IllegalAccessException {
+        final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+        bukkitCommandMap.setAccessible(true);
+        return (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
+    }
+
+    @SuppressWarnings("unchecked")
+    private void removeKnownCommand(CommandMap commandMap, String commandName) throws NoSuchFieldException, IllegalAccessException {
+        Field knownCommands = SimpleCommandMap.class.getDeclaredField("knownCommands");
+        knownCommands.setAccessible(true);
+        Map<String, Command> commands = (Map<String, Command>) knownCommands.get(commandMap);
+        Command command = commands.remove(commandName);
+        if (command != null) {
+            command.unregister(commandMap);
         }
     }
 }

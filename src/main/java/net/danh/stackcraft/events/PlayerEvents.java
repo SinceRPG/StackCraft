@@ -38,11 +38,10 @@ public class PlayerEvents implements Listener {
         Player p = e.getPlayer();
         new PlayerData(p).loadData();
 
-        // Init default values
-        Items.toggle.putIfAbsent(p, false);
+        Items.toggle.putIfAbsent(p.getUniqueId(), Files.getConfig().getBoolean("default_toggle_item.all", false));
 
         Items.toggle_craft.forEach((key, val) -> {
-            String pKey = p.getName() + "_" + key;
+            String pKey = Items.getPlayerItemKey(p, key);
             if (!Items.per_toggle_craft.containsKey(pKey)) {
                 Items.per_toggle_craft.put(pKey, Files.getConfig().getBoolean("default_toggle_item.per", false));
             }
@@ -52,6 +51,7 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         new PlayerData(e.getPlayer()).saveData();
-        Items.toggle.remove(e.getPlayer());
+        Items.removePlayer(e.getPlayer());
+        CraftCheck.removeFromQueue(e.getPlayer());
     }
 }

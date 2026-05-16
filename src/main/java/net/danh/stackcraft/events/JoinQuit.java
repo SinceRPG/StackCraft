@@ -1,6 +1,7 @@
 package net.danh.stackcraft.events;
 
 import net.danh.stackcraft.playerdata.PlayerData;
+import net.danh.stackcraft.resources.Files;
 import net.danh.stackcraft.utils.Items;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,12 +15,12 @@ public class JoinQuit implements Listener {
     public void onJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
         new PlayerData(e.getPlayer()).loadData();
-        if (!Items.toggle.containsKey(p)) {
-            Items.toggle.put(p, false);
+        if (!Items.toggle.containsKey(p.getUniqueId())) {
+            Items.setGlobalToggle(p, Files.getConfig().getBoolean("default_toggle_item.all", false));
         }
         Items.toggle_craft.forEach((s, s2) -> {
-            if (!Items.per_toggle_craft.containsKey(p.getName() + "_" + s)) {
-                Items.per_toggle_craft.put(p.getName() + "_" + s, true);
+            if (!Items.per_toggle_craft.containsKey(Items.getPlayerItemKey(p, s))) {
+                Items.setPerToggle(p, s, Files.getConfig().getBoolean("default_toggle_item.per", false));
             }
         });
     }
@@ -27,5 +28,6 @@ public class JoinQuit implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         new PlayerData(e.getPlayer()).saveData();
+        Items.removePlayer(e.getPlayer());
     }
 }

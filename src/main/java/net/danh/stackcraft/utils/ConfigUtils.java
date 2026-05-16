@@ -1,6 +1,5 @@
 package net.danh.stackcraft.utils;
 
-import lombok.Getter;
 import net.danh.stackcraft.StackCraft;
 import net.danh.stackcraft.resources.Chat;
 import net.kyori.adventure.text.Component;
@@ -15,7 +14,6 @@ public class ConfigUtils {
     private final StackCraft plugin;
     private final String name;
     private File file;
-    @Getter
     private FileConfiguration config;
 
     public ConfigUtils(StackCraft plugin, String name) {
@@ -53,6 +51,9 @@ public class ConfigUtils {
         load();
     }
 
+    public FileConfiguration getConfig() {
+        return config;
+    }
 
     public String getString(String path) {
         return config.getString(path, "");
