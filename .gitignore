@@ -1,6 +1,9 @@
 *.jar
+!gradle/wrapper/gradle-wrapper.jar
 /target/
+/build/
+/.gradle/
+/.codex-tools/
 dependency-reduced-pom.xml
 /.idea/
 *.iml
-/.codex-tools/

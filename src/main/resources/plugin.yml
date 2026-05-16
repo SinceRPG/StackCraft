@@ -1,7 +1,7 @@
 name: StackCraft
-version: '${project.version}'
+version: '${version}'
 main: net.danh.stackcraft.StackCraft
-api-version: '1.13'
+api-version: '26.1.2'
 folia-supported: true
 authors: [ VoChiDanh ]
 website: https://gitlab.com/VoChiDanh/StackCraft/-/wikis/home
