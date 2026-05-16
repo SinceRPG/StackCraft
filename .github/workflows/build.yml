@@ -42,11 +42,11 @@ jobs:
         with:
           fetch-depth: 0 # Required to fetch git log history for commits
 
-      - name: Setup Java JDK 25
+      - name: Setup Java JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '25'
+          java-version: '21'
           cache: 'gradle' # Automatically handles Gradle caching
 
       # --- STEP 1: NOTIFY BUILD START ---
