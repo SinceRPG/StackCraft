@@ -1,6 +1,5 @@
 package net.danh.stackcraft;
 
-import lombok.Getter;
 import net.danh.stackcraft.api.SCAPI;
 import net.danh.stackcraft.cmd.mainCMD.STC_CMD;
 import net.danh.stackcraft.events.PlayerEvents;
@@ -8,6 +7,7 @@ import net.danh.stackcraft.placeholder.STC_PAPI;
 import net.danh.stackcraft.playerdata.PlayerData;
 import net.danh.stackcraft.resources.Files;
 import net.danh.stackcraft.utils.CraftCheck;
+import net.danh.stackcraft.utils.ServerScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -15,30 +15,50 @@ import java.util.logging.Level;
 
 public final class StackCraft extends JavaPlugin {
     private static StackCraft instance;
-    @Getter
     private static boolean isMMOItemsInstalled = false;
-    @Getter
     private static boolean isItemsAdderInstalled = false;
-    @Getter
     private static boolean isOraxenInstalled = false;
-    @Getter
     private static boolean isExecutableItemsInstalled = false;
-    @Getter
     private static boolean isNexoInstalled = false;
-    @Getter
     private static boolean isItemEditInstalled = false;
-    @Getter
     private static boolean isMythicInstalled = false;
 
     public static StackCraft get() {
         return instance;
     }
 
+    public static boolean isMMOItemsInstalled() {
+        return isMMOItemsInstalled;
+    }
+
+    public static boolean isItemsAdderInstalled() {
+        return isItemsAdderInstalled;
+    }
+
+    public static boolean isOraxenInstalled() {
+        return isOraxenInstalled;
+    }
+
+    public static boolean isExecutableItemsInstalled() {
+        return isExecutableItemsInstalled;
+    }
+
+    public static boolean isNexoInstalled() {
+        return isNexoInstalled;
+    }
+
+    public static boolean isItemEditInstalled() {
+        return isItemEditInstalled;
+    }
+
+    public static boolean isMythicInstalled() {
+        return isMythicInstalled;
+    }
+
     @Override
     public void onEnable() {
         instance = this;
 
-        // Đã xóa dòng SimpleConfigurationManager
         Files.loadFiles();
 
         checkDependencies();
@@ -51,13 +71,14 @@ public final class StackCraft extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerEvents(), this);
 
         Files.reloadFiles();
+        CraftCheck.loadCrafting();
 
-        // Task xử lý Queue: 5 ticks (0.25s) một lần. Đủ nhanh để player không thấy delay, đủ chậm để không lag server.
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this, CraftCheck::processQueue, 5L, 5L);
+        long queueInterval = Math.max(1L, Files.getConfig().getLong("settings.queue_interval_ticks", 5L));
+        ServerScheduler.runGlobalTimer(CraftCheck::processQueue, queueInterval, queueInterval);
 
-        // Task Auto-Craft định kỳ (cho người chơi AFK hoặc đứng gần farm)
         if (Files.getConfig().getBoolean("settings.auto_craft_schedule")) {
-            Bukkit.getScheduler().runTaskTimer(this, () -> Bukkit.getOnlinePlayers().forEach(CraftCheck::addToQueue), 20L, 20L);
+            long scheduleInterval = Math.max(1L, Files.getConfig().getLong("settings.auto_craft_schedule_interval_ticks", 20L));
+            ServerScheduler.runGlobalTimer(() -> Bukkit.getOnlinePlayers().forEach(CraftCheck::addToQueue), scheduleInterval, scheduleInterval);
         }
 
         if (!SCAPI.isPremium()) {
@@ -68,8 +89,9 @@ public final class StackCraft extends JavaPlugin {
     @Override
     public void onDisable() {
         Files.saveFiles();
-        Bukkit.getScheduler().cancelTasks(this); // Hủy toàn bộ task khi tắt
+        ServerScheduler.cancelTasks();
         Bukkit.getOnlinePlayers().forEach(player -> new PlayerData(player).saveData());
+        CraftCheck.clearQueue();
     }
 
     private void checkDependencies() {

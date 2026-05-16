@@ -3,11 +3,16 @@ admin:
   help:
     - "<yellow>/stc reload - reload files"
 user:
+  manual_craft: "<gray>Auto-craft check queued."
   toggle: "<gray>AutoCraft Status: #status#"
   per_item: "<gray>#item# Status: #status#"
+  status_header: "<gray>AutoCraft Global: #status#"
+  status_item: "<gray>#item#: #status#"
   permission: "<red>You don't have permission to do this <yellow>(stc.toggle)"
   status:
     status_on: "<green>On</green>"
     status_off: "<red>Off</red>"
   help:
     - "<yellow>/stc toggle - Toggle auto crafting - stc.toggle"
+    - "<yellow>/stc craft - Run an auto-craft check now - stc.toggle"
+    - "<yellow>/stc status - Show auto-craft toggle status - stc.toggle"

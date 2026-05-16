@@ -2,6 +2,7 @@ name: StackCraft
 version: '${project.version}'
 main: net.danh.stackcraft.StackCraft
 api-version: '1.13'
+folia-supported: true
 authors: [ VoChiDanh ]
 website: https://gitlab.com/VoChiDanh/StackCraft/-/wikis/home
 softdepend:

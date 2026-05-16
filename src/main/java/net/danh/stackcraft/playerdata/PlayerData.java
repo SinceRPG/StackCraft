@@ -23,25 +23,18 @@ public class PlayerData {
 
     public void loadData() {
         create();
-        if (!Items.toggle.containsKey(p)) {
-            Items.toggle.put(p, get().getBoolean("toggle_item.all", Files.getConfig().getBoolean("default_toggle_item.all", false)));
-        } else {
-            Items.toggle.replace(p, get().getBoolean("toggle_item.all", Files.getConfig().getBoolean("default_toggle_item.all", false)));
-        }
+        Items.setGlobalToggle(p, get().getBoolean("toggle_item.all", Files.getConfig().getBoolean("default_toggle_item.all", false)));
         Items.toggle_craft.forEach((s, s2) -> {
-            if (!Items.per_toggle_craft.containsKey(p.getName() + "_" + s)) {
-                Items.per_toggle_craft.put(p.getName() + "_" + s, get().getBoolean("toggle_item.per." + s, Files.getConfig().getBoolean("default_toggle_item.per", false)));
-            } else {
-                Items.per_toggle_craft.replace(p.getName() + "_" + s, get().getBoolean("toggle_item.per." + s, Files.getConfig().getBoolean("default_toggle_item.per", false)));
-            }
+            Items.setPerToggle(p, s, get().getBoolean("toggle_item.per." + s, Files.getConfig().getBoolean("default_toggle_item.per", false)));
         });
     }
 
     public void saveData() {
         create();
         get().set("name", p.getName());
-        get().set("toggle_item.all", Items.toggle.get(p));
-        Items.toggle_craft.forEach((s, s2) -> get().set("toggle_item.per." + s, Items.per_toggle_craft.get(p.getName() + "_" + s)));
+        get().set("uuid", p.getUniqueId().toString());
+        get().set("toggle_item.all", Items.getGlobalToggle(p));
+        Items.toggle_craft.forEach((s, s2) -> get().set("toggle_item.per." + s, Items.getPerToggle(p, s)));
         save();
         reload();
     }

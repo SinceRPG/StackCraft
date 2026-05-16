@@ -1,20 +1,25 @@
 settings:
   debug: false
   prefix: "<white>[ <yellow>STC</yellow> ]"
-  #Disable auto craft active by schedule
-  #At sometimes player needs uncraft item to do sth, so it will be Auto craft again…
+  # How often StackCraft processes queued players after pickups, block breaks, and mob kills.
+  queue_interval_ticks: 5
+  # Keep this disabled if players often need to uncraft items manually.
   auto_craft_schedule: false
+  # How often StackCraft scans online players when scheduled auto-crafting is enabled.
+  auto_craft_schedule_interval_ticks: 20
+  # Drop crafted overflow near the player instead of deleting it when the inventory is full.
+  drop_overflow_items: true
 
 default_toggle_item:
   all: false
   per: false
 
 toggle:
-  coal: #permission for player can use command is stc.toggle.coal
+  coal: # Permission for this toggle command is stc.toggle.coal.
     display: "<gray>AutoCraft Coal"
-    command: #If you don't want to use command for this, you can delete this
-      register: true #If true -> command will register after player rejoin
-      alias: coalcrafttoggle #command
+    command: # Remove this section when this toggle should not have a standalone command.
+      register: true # Register this alias when StackCraft loads or reloads.
+      alias: coalcrafttoggle
     contain:
       - VANILLA;COAL;1
       - MMOITEMS;MATERIAL;COAL;1
@@ -22,7 +27,7 @@ toggle:
       - MMOITEMS;MATERIAL;COAL_BLOCK;1
 
 craft:
-  # Custom item:
+  # Custom item formats:
   # ItemsAdder: ITEMSADDER;CUSTOM_ID;AMOUNT
   # Oraxen: ORAXEN;CUSTOM_ID;AMOUNT
   # MMOItems: MMOITEMS;TYPE;ID;AMOUNT
@@ -32,17 +37,17 @@ craft:
   # MythicMobs: MYTHICMOBS;ID;AMOUNT
   # Vanilla: VANILLA;TYPE;AMOUNT
   VANILLA;COAL;1:
-    # When required_all: true, you will need all items below ingredient to craft - default is false
+    # When required_all is true, every ingredient below is consumed together for each craft.
     required_all: true
     ingredient:
-      - VANILLA;COAL_ORE;1 #1 coal_ore -> 1 coal
-      - VANILLA;COAL_BLOCK;1 #1 coal_block -> 1 coal
+      - VANILLA;COAL_ORE;1 # 1 coal ore -> 1 coal
+      - VANILLA;COAL_BLOCK;1 # 1 coal block -> 1 coal
   MMOITEMS;MATERIAL;COAL;1:
-    # When required_all: true, you will need all items below ingredient to craft - default is false
+    # When required_all is false or missing, any matching ingredient can craft the result.
     required_all: true
     ingredient:
-      - VANILLA;COAL;64 #64 vanilla coal -> 1 mmoitems custom coal
-      - VANILLA;COAL_BLOCK;64 #64 vanilla coal block -> 1 mmoitems custom coal
+      - VANILLA;COAL;64 # 64 vanilla coal -> 1 MMOItems custom coal
+      - VANILLA;COAL_BLOCK;64 # 64 vanilla coal block -> 1 MMOItems custom coal
   MMOITEMS;MATERIAL;COAL_ORE;1:
     ingredient:
       - MMOITEMS;MATERIAL;COAL;64

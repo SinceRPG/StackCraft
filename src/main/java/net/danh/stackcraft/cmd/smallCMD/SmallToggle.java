@@ -29,10 +29,7 @@ public class SmallToggle extends SmallCommands {
         if (c instanceof Player p) {
             if (args.length == 0) {
                 if (p.hasPermission("stc.toggle." + item)) {
-                    Items.per_toggle_craft.replace(p.getName() + "_" + item, !Items.per_toggle_craft.get(p.getName() + "_" + item));
-                    p.sendMessage(Chat.colorize(Objects.requireNonNull(Files.getMessage().getString("user.per_item"))
-                            .replace("#status#", Items.getStatus(p, item))
-                            .replace("#item#", Objects.requireNonNull(Files.getConfig().getString("toggle." + item + ".display")))));
+                    toggleItem(p);
                 }
             }
         } else if (c instanceof ConsoleCommandSender) {
@@ -40,10 +37,7 @@ public class SmallToggle extends SmallCommands {
                 Player p = Bukkit.getPlayer(args[0]);
                 if (p != null) {
                     if (p.hasPermission("stc.toggle." + item)) {
-                        Items.per_toggle_craft.replace(p.getName() + "_" + item, !Items.per_toggle_craft.get(p.getName() + "_" + item));
-                        p.sendMessage(Chat.colorize(Objects.requireNonNull(Files.getMessage().getString("user.per_item"))
-                                .replace("#status#", Items.getStatus(p, item))
-                                .replace("#item#", Objects.requireNonNull(Files.getConfig().getString("toggle." + item + ".display")))));
+                        toggleItem(p);
                     }
                 }
             }
@@ -60,5 +54,12 @@ public class SmallToggle extends SmallCommands {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         return null;
+    }
+
+    private void toggleItem(Player player) {
+        Items.setPerToggle(player, item, !Items.getPerToggle(player, item));
+        player.sendMessage(Chat.colorize(Objects.requireNonNull(Files.getMessage().getString("user.per_item"))
+                .replace("#status#", Items.getStatus(player, item))
+                .replace("#item#", Objects.requireNonNull(Files.getConfig().getString("toggle." + item + ".display")))));
     }
 }

@@ -34,13 +34,16 @@ public class CraftCheck {
                         Chat.debug("Invalid result item in config: " + itemCraftKey);
                         continue;
                     }
+                    resultItem.setAmount(Math.max(1, Items.parseAmount(itemCraftKey)));
 
                     List<Ingredient> ingredients = new ArrayList<>();
                     for (String ingStr : ingredientStrings) {
                         ItemStack ingItem = Items.parseItem(ingStr);
-                        if (ingItem != null) {
-                            int amount = Items.parseAmount(ingStr);
+                        int amount = Items.parseAmount(ingStr);
+                        if (ingItem != null && amount > 0) {
                             ingredients.add(new Ingredient(ingItem, amount));
+                        } else {
+                            Chat.debug("Invalid ingredient in config: " + ingStr);
                         }
                     }
 
@@ -62,6 +65,17 @@ public class CraftCheck {
         }
     }
 
+    public static void removeFromQueue(Player player) {
+        if (player != null) {
+            playerQueue.remove(player.getUniqueId());
+        }
+    }
+
+    public static void clearQueue() {
+        playerQueue.clear();
+        cachedRecipes.clear();
+    }
+
     public static void processQueue() {
         if (playerQueue.isEmpty()) return;
 
@@ -70,23 +84,23 @@ public class CraftCheck {
             UUID uuid = iterator.next();
             Player p = Bukkit.getPlayer(uuid);
             if (p != null && p.isOnline()) {
-                checkPlayerCrafts(p);
+                ServerScheduler.runForPlayer(p, () -> checkPlayerCrafts(p));
             }
             iterator.remove();
         }
     }
 
     private static void checkPlayerCrafts(Player p) {
-        boolean globalToggle = Items.toggle.getOrDefault(p, false);
+        boolean globalToggle = Items.getGlobalToggle(p);
 
         for (Recipe recipe : cachedRecipes) {
             String toggleId = recipe.toggleId();
-            boolean perToggle = Items.per_toggle_craft.getOrDefault(p.getName() + "_" + toggleId, false);
+            boolean perToggle = Items.getPerToggle(p, toggleId);
 
             if (!globalToggle && !(SCAPI.isPremium() && perToggle)) continue;
 
             if (!p.hasPermission("stc.toggle") && !p.hasPermission("stc.toggle." + toggleId)) {
-                if (perToggle) Items.per_toggle_craft.put(p.getName() + "_" + toggleId, false);
+                if (perToggle) Items.setPerToggle(p, toggleId, false);
                 continue;
             }
 
@@ -127,15 +141,20 @@ public class CraftCheck {
         for (Ingredient ing : ingredientsToRemove) {
             Items.removeItems(p, ing.item, ing.amount * times);
         }
-        ItemStack reward = result.clone();
-        reward.setAmount(result.getAmount() * times);
+        int remaining = Math.multiplyExact(result.getAmount(), times);
+        int maxStackSize = Math.max(1, result.getMaxStackSize());
 
-        HashMap<Integer, ItemStack> leftovers = p.getInventory().addItem(reward);
+        while (remaining > 0) {
+            ItemStack reward = result.clone();
+            reward.setAmount(Math.min(maxStackSize, remaining));
+            HashMap<Integer, ItemStack> leftovers = p.getInventory().addItem(reward);
 
-        if (!leftovers.isEmpty()) {
-            leftovers.values().forEach(item ->
-                    p.getWorld().dropItemNaturally(p.getLocation(), item)
-            );
+            if (!leftovers.isEmpty() && Files.getConfig().getBoolean("settings.drop_overflow_items", true)) {
+                leftovers.values().forEach(item ->
+                        p.getWorld().dropItemNaturally(p.getLocation(), item)
+                );
+            }
+            remaining -= reward.getAmount();
         }
 
         p.updateInventory();

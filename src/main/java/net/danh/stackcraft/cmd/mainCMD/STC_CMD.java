@@ -1,6 +1,7 @@
 package net.danh.stackcraft.cmd.mainCMD;
 
 import net.danh.stackcraft.cmd.smallCMD.SmallToggle;
+import net.danh.stackcraft.playerdata.PlayerData;
 import net.danh.stackcraft.resources.Chat;
 import net.danh.stackcraft.resources.Files;
 import net.danh.stackcraft.utils.CMDBase;
@@ -32,30 +33,14 @@ public class STC_CMD extends CMDBase {
             }
 
             if (c.hasPermission("stc.admin") && args[0].equalsIgnoreCase("reload")) {
-                Files.reloadFiles();
-
                 Items.full_toggle_craft.forEach((alias, id) -> new SmallToggle(alias, id).removeCommand());
                 Items.full_toggle_craft.clear();
                 Items.toggle_craft.clear();
+                Items.per_toggle_craft.clear();
 
-                if (Files.getConfig().contains("toggle")) {
-                    for (String item_list : Objects.requireNonNull(Files.getConfig().getConfigurationSection("toggle")).getKeys(false)) {
-                        String id = Files.getConfig().getString("toggle." + item_list + ".command.alias");
-                        boolean register = Files.getConfig().getBoolean("toggle." + item_list + ".command.register");
+                Files.reloadFiles();
 
-                        if (register && id != null) {
-                            new SmallToggle(id, item_list).addCommand();
-                        }
-
-                        Items.toggle_craft.put(item_list, item_list);
-                        if (id != null) Items.full_toggle_craft.put(id, item_list);
-                    }
-                }
-
-                boolean defaultPer = Files.getConfig().getBoolean("default_toggle_item.per", false);
-                Items.toggle_craft.forEach((key, val) -> Bukkit.getOnlinePlayers().forEach(p -> {
-                    Items.per_toggle_craft.put(p.getName() + "_" + key, defaultPer);
-                }));
+                Bukkit.getOnlinePlayers().forEach(p -> new PlayerData(p).loadData());
 
                 CraftCheck.loadCrafting();
 
@@ -63,17 +48,31 @@ public class STC_CMD extends CMDBase {
             }
 
             if (c.hasPermission("stc.toggle") && c instanceof Player) {
+                Player p = (Player) c;
                 if (args[0].equalsIgnoreCase("toggle")) {
-                    Player p = (Player) c;
-                    boolean newState = !Items.toggle.getOrDefault(p, false);
-                    Items.toggle.put(p, newState);
+                    boolean newState = !Items.getGlobalToggle(p);
+                    Items.setGlobalToggle(p, newState);
 
                     for (String item : Items.toggle_craft.keySet()) {
-                        Items.per_toggle_craft.put(p.getName() + "_" + item, newState);
+                        Items.setPerToggle(p, item, newState);
                     }
 
                     p.sendMessage(Chat.colorize(Objects.requireNonNull(Files.getMessage().getString("user.toggle"))
                             .replace("#status#", Items.getStatus(p, null))));
+                }
+
+                if (args[0].equalsIgnoreCase("craft")) {
+                    CraftCheck.addToQueue(p);
+                    Chat.sendMessage(p, Files.getMessage().getString("user.manual_craft"));
+                }
+
+                if (args[0].equalsIgnoreCase("status")) {
+                    Chat.sendMessage(p, Files.getMessage().getString("user.status_header")
+                            .replace("#status#", Items.getStatus(p, null)));
+                    Items.toggle_craft.keySet().stream().sorted().forEach(item -> Chat.sendMessage(p,
+                            Files.getMessage().getString("user.status_item")
+                                    .replace("#item#", Files.getConfig().getString("toggle." + item + ".display", item))
+                                    .replace("#status#", Items.getStatus(p, item))));
                 }
             } else if (!c.hasPermission("stc.toggle") && !c.hasPermission("stc.admin")) {
                 Chat.sendMessage(c, Files.getMessage().getString("user.permission"));
@@ -90,6 +89,8 @@ public class STC_CMD extends CMDBase {
                 commands.add("reload");
             }
             if (sender.hasPermission("stc.toggle") && sender instanceof Player) {
+                commands.add("craft");
+                commands.add("status");
                 commands.add("toggle");
             }
             StringUtil.copyPartialMatches(args[0], commands, completions);
