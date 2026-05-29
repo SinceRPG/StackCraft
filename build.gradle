@@ -40,8 +40,3 @@ processResources {
         expand(version: project.version)
     }
 }
-
-jar {
-    archiveBaseName.set(project.name)
-    archiveVersion.set("")
-}
