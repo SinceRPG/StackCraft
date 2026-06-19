@@ -1,7 +1,5 @@
 # Welcome to StackCraft
 
-![StackCraft Logo](../pickaxe.png){ width="200" align="right" }
-
 **StackCraft** is a high-performance auto-crafting and item conversion plugin for PaperMC servers. It helps keep your players' inventories organized by automatically converting raw materials into their crafted counterparts or converting vanilla items into custom ones!
 
 ## Why StackCraft?
