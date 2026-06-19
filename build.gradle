@@ -26,7 +26,7 @@ dependencies {
     compileOnly "io.th0rgal:oraxen:1.213.0"
 
     compileOnly files("libs/ItemEdit.jar")
-    compileOnly files("libs/ItemsAdder.jar")
+    compileOnly "com.github.LoneDev6:API-ItemsAdder:3.6.1"
     compileOnly files("libs/SCore.jar")
 
     compileOnly "net.kyori:adventure-api:5.1.1"
