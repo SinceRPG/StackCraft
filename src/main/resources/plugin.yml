@@ -4,7 +4,7 @@ main: net.danh.stackcraft.StackCraft
 api-version: '1.16'
 folia-supported: true
 authors: [ VoChiDanh ]
-website: https://gitlab.com/VoChiDanh/StackCraft/-/wikis/home
+website: https://sincerpg.github.io/StackCraft/
 softdepend:
   - MMOItems
   - MythicLib

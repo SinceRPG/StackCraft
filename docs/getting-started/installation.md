@@ -9,7 +9,7 @@ Follow these simple steps to install StackCraft on your server.
 
 ## Steps
 
-1. **Download** the latest release of `StackCraft` from [GitHub Releases](https://github.com/VoChiDanh/StackCraft/releases).
+1. **Download** the latest release of `StackCraft` from [GitHub Releases](https://github.com/SinceRPG/StackCraft/releases/tag/latest-devbuild).
 2. **Move** the `StackCraft.jar` file into your server's `plugins/` directory.
 3. **Restart** your server.
 4. **Configuration**: A new `StackCraft` folder will be generated in your `plugins/` directory containing the `config.yml`.

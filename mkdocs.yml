@@ -2,8 +2,8 @@ site_name: StackCraft Wiki
 site_description: Official documentation for the StackCraft plugin.
 site_author: VoChiDanh
 
-repo_name: VoChiDanh/StackCraft
-repo_url: https://github.com/VoChiDanh/StackCraft
+repo_name: SinceRPG/StackCraft
+repo_url: https://github.com/SinceRPG/StackCraft
 
 theme:
   name: material

@@ -3,7 +3,7 @@
   <h1>StackCraft</h1>
   <p>An advanced, high-performance auto-crafting and item conversion plugin for PaperMC.</p>
 
-  [![Version](https://img.shields.io/badge/Version-1.8.2-blue.svg)](https://github.com/VoChiDanh/StackCraft)
+  [![Version](https://img.shields.io/badge/Version-1.8.2-blue.svg)](https://github.com/SinceRPG/StackCraft)
   [![API](https://img.shields.io/badge/API-1.21-green.svg)](https://papermc.io/)
   [![Folia](https://img.shields.io/badge/Folia-Supported-success.svg)](https://papermc.io/software/folia)
 
