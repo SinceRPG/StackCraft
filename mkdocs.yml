@@ -1,0 +1,59 @@
+site_name: StackCraft Wiki
+site_description: Official documentation for the StackCraft plugin.
+site_author: VoChiDanh
+
+repo_name: VoChiDanh/StackCraft
+repo_url: https://github.com/VoChiDanh/StackCraft
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.tabs.link
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Installation: getting-started/installation.md
+      - First Steps: getting-started/first-steps.md
+  - Configuration:
+      - General Settings: configuration/general.md
+      - Auto Crafting: configuration/auto-crafting.md
+      - Toggle Commands: configuration/toggle-commands.md
+  - Plugin Integrations:
+      - Supported Plugins: integrations/supported-plugins.md
+      - Item Formats: integrations/item-formats.md
+  - Commands & Permissions: commands-permissions.md
