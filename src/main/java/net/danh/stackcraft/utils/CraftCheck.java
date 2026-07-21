@@ -48,8 +48,15 @@ public class CraftCheck {
                     }
 
                     if (!ingredients.isEmpty()) {
+                        if (!SCAPI.isPremium() && cachedRecipes.size() >= 5) {
+                            Chat.debug("Free version limited to 5 recipes. Upgrade to Premium for unlimited recipes!");
+                            break;
+                        }
                         cachedRecipes.add(new Recipe(toggleId, resultItem, ingredients, requiredAll));
                     }
+                }
+                if (!SCAPI.isPremium() && cachedRecipes.size() >= 5) {
+                    break;
                 }
             }
             Chat.debug("Loaded " + cachedRecipes.size() + " auto-craft recipes.");

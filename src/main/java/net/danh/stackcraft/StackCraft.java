@@ -82,7 +82,8 @@ public final class StackCraft extends JavaPlugin {
         }
 
         if (!SCAPI.isPremium()) {
-            getLogger().log(Level.INFO, "Running Free Version - Advanced Hooks Disabled.");
+            getLogger().log(Level.INFO, "Running Free Version - Advanced Hooks Disabled. Limited to 5 recipes.");
+            getLogger().log(Level.INFO, "Upgrade to Premium for infinite recipes and full plugin support!");
         }
     }
 

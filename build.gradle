@@ -40,3 +40,55 @@ processResources {
         expand(version: project.version)
     }
 }
+
+task buildAll {
+    group = "build"
+    description = "Builds both Free and Premium versions of StackCraft"
+    doLast {
+        def apiFile = file('src/main/java/net/danh/stackcraft/api/SCAPI.java')
+        def originalText = apiFile.text
+        
+        def os = System.properties['os.name'].toLowerCase()
+        def buildCmd = os.contains('windows') ? "cmd /c gradlew.bat clean build" : "sh -c ./gradlew clean build"
+
+        // 1. Compile Premium
+        println "=== Building Premium Version ==="
+        apiFile.text = originalText.replace('boolean premium = false;', 'boolean premium = true;')
+        
+        def p1 = buildCmd.execute(null, project.projectDir)
+        p1.waitForProcessOutput(System.out, System.err)
+        if (p1.exitValue() != 0) throw new GradleException("Premium build failed")
+        
+        project.copy {
+            from "build/libs"
+            into "jar"
+            include "StackCraft-${version}.jar"
+            rename { String fileName ->
+                fileName.replace(".jar", "-Premium.jar")
+            }
+        }
+
+        // 2. Compile Free
+        println "=== Building Free Version ==="
+        apiFile.text = originalText.replace('boolean premium = true;', 'boolean premium = false;')
+        
+        def p2 = buildCmd.execute(null, project.projectDir)
+        p2.waitForProcessOutput(System.out, System.err)
+        if (p2.exitValue() != 0) throw new GradleException("Free build failed")
+        
+        project.copy {
+            from "build/libs"
+            into "jar"
+            include "StackCraft-${version}.jar"
+            rename { String fileName ->
+                fileName.replace(".jar", "-Free.jar")
+            }
+        }
+
+        // 3. Revert source
+        println "=== Cleaning up ==="
+        apiFile.text = originalText.replace('boolean premium = false;', 'boolean premium = true;')
+        
+        println "=== Done! Jars are located in the 'jar/' folder! ==="
+    }
+}

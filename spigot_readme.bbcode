@@ -1,0 +1,144 @@
+[CENTER]
+[IMG]https://raw.githubusercontent.com/SinceRPG/StackCraft/main/pickaxe.png[/IMG]
+[SIZE=7][B][COLOR=#ff9900]StackCraft[/COLOR][/B][/SIZE]
+[SIZE=4][I]The Ultimate, High-Performance Auto-Crafting & Item Conversion Plugin for PaperMC & Folia![/I][/SIZE]
+[/CENTER]
+
+
+[SIZE=5][B][COLOR=#ffcc00]🌟 Overview[/COLOR][/B][/SIZE]
+[B]StackCraft[/B] is an advanced, fully-customizable plugin designed to automatically convert and craft items in a player's inventory. Gone are the days of tedious manual crafting to compress ores, crops, or custom items! 
+
+What sets StackCraft apart is its extreme flexibility and performance. It doesn't just support Vanilla items—it flawlessly integrates with the most popular custom item plugins on the market, all while utilizing a highly optimized, queue-based processing system to ensure zero server lag, even on massive networks.
+
+
+[SIZE=5][B][COLOR=#ffcc00]⚡ Core Features[/COLOR][/B][/SIZE]
+[LIST]
+[*][B]Deep Plugin Integration[/B]: Why stop at Vanilla? StackCraft fully supports custom items from:
+[LIST]
+[*][B]ItemsAdder[/B]
+[*][B]Oraxen[/B]
+[*][B]MMOItems[/B]
+[*][B]ExecutableItems[/B] (SCore)
+[*][B]Nexo[/B]
+[*][B]ItemEdit[/B]
+[*][B]MythicMobs[/B]
+[/LIST]
+[*][B]Folia Support[/B]: Built from the ground up to be fully compatible with Folia, making it perfect for high-performance and heavily threaded servers.
+[*][B]Smart Queue Processing[/B]: Instead of looping through inventories heavily, StackCraft uses a configurable tick-based queue system to process auto-crafting seamlessly without lagging the main thread.
+[*][B]Dynamic Triggers[/B]: Auto-crafting happens naturally during gameplay! It triggers automatically when players:
+[LIST]
+[*]⛏️ Break a block
+[*]🎒 Pick up an item
+[*]⚔️ Kill a mob
+[*]⏱️ Or via an optional automated scheduled background task!
+[/LIST]
+[*][B]Smart Overflow Handling[/B]: If a player's inventory becomes full during crafting, the excess crafted items will automatically drop near the player instead of disappearing.
+[*][B]PlaceholderAPI Support[/B]: Display players' auto-crafting status easily on scoreboards, action bars, and menus.
+[/LIST]
+
+
+[SIZE=5][B][COLOR=#ffcc00]⚙️ Commands & Permissions[/COLOR][/B][/SIZE]
+StackCraft provides an easy-to-use command system to let players take control of their crafting preferences.
+
+[B][COLOR=#00ff00]Admin Commands[/COLOR][/B]
+[LIST]
+[*][B]/stc reload[/B] - Reloads all configuration files and player data. 
+[I]Permission:[/I] [FONT=Courier New]stc.admin[/FONT]
+[/LIST]
+
+[B][COLOR=#00ff00]Player Commands[/COLOR][/B] (Requires [FONT=Courier New]stc.toggle[/FONT] permission)
+[LIST]
+[*][B]/stc help[/B] - Displays the help menu.
+[*][B]/stc toggle[/B] - Toggles the global auto-crafting status on or off for the player.
+[*][B]/stc craft[/B] - Manually forces an instant auto-craft check for the player's inventory.
+[*][B]/stc status[/B] - Shows the player their current global toggle status and the status of all specific item toggles.
+[/LIST]
+
+[B][COLOR=#00ff00]Custom Toggle Commands[/COLOR][/B]
+You can define custom command aliases for specific items in the config (e.g., [FONT=Courier New]/coalcrafttoggle[/FONT]).
+[I]Permission:[/I] [FONT=Courier New]stc.toggle.<name>[/FONT] (e.g., [FONT=Courier New]stc.toggle.coal[/FONT])
+
+
+[SIZE=5][B][COLOR=#ffcc00]📊 Placeholders (PlaceholderAPI)[/COLOR][/B][/SIZE]
+You can display a player's crafting status anywhere that supports PAPI!
+
+[LIST]
+[*][FONT=Courier New]%stc_toggle%[/FONT] - Returns the global toggle status (On/Off).
+[*][FONT=Courier New]%stc_toggle_<name>%[/FONT] - Returns the toggle status for a specific item configured in [FONT=Courier New]config.yml[/FONT] (e.g., [FONT=Courier New]%stc_toggle_coal%[/FONT]).
+[/LIST]
+[I]Note: The "On/Off" text can be fully customized with color codes in [FONT=Courier New]message.yml[/FONT].[/I]
+
+
+[SIZE=5][B][COLOR=#ffcc00]🛠️ Comprehensive Configuration Guide[/COLOR][/B][/SIZE]
+StackCraft offers a highly customizable setup. Here is how you can configure every aspect from A to Z!
+
+[B][COLOR=#00ccff]1. General Settings[/COLOR][/B]
+Control how the plugin behaves globally:
+[CODE=yaml]
+settings:
+  # The prefix shown before StackCraft messages
+  prefix: "<white>[ <yellow>STC</yellow> ]"
+  # How often (in ticks) StackCraft processes the crafting queue
+  queue_interval_ticks: 5
+  # Enable/disable scheduled background crafting checks
+  auto_craft_schedule: false
+  # How often the scheduled check runs (if enabled)
+  auto_craft_schedule_interval_ticks: 20
+  # Automatically drops crafted items if the inventory is full
+  drop_overflow_items: true
+[/CODE]
+
+[B][COLOR=#00ccff]2. Default Toggles[/COLOR][/B]
+Decide if new players have auto-crafting enabled by default:
+[CODE=yaml]
+default_toggle_item:
+  all: false # Default global toggle status
+  per: false # Default specific-item toggle status
+[/CODE]
+
+[B][COLOR=#00ccff]3. Custom Toggles & Aliases[/COLOR][/B]
+Let players toggle auto-crafting for specific items (like just Coal or just Diamonds), and even register custom commands for them!
+[CODE=yaml]
+toggle:
+  coal: # The name identifier (Permission: stc.toggle.coal)
+    display: "<gray>AutoCraft Coal" # Display name in /stc status
+    command:
+      register: true # Registers this as a real server command!
+      alias: coalcrafttoggle # Players can type /coalcrafttoggle
+    contain: # Which crafting recipes are affected by this toggle
+      - VANILLA;COAL;1
+      - MMOITEMS;MATERIAL;COAL;1
+[/CODE]
+
+[B][COLOR=#00ccff]4. Defining Crafting Recipes (The Core)[/COLOR][/B]
+The syntax to define an item is: [FONT=Courier New]PLUGIN;ID;AMOUNT[/FONT]. 
+Here is an example showing Vanilla and MMOItems integration:
+[CODE=yaml]
+craft:
+  # The Result Item (What you get)
+  VANILLA;COAL;1:
+    # If true, ALL ingredients listed below are consumed at the same time to craft this.
+    # If false/missing, ANY single ingredient listed below can trigger the craft.
+    required_all: true 
+    ingredient:
+      - VANILLA;COAL_ORE;1   # 1 Vanilla Coal Ore yields 1 Vanilla Coal
+      - VANILLA;COAL_BLOCK;1 # 1 Vanilla Coal Block yields 1 Vanilla Coal
+
+  # Custom MMOItem Result
+  MMOITEMS;MATERIAL;CUSTOM_COAL;1:
+    ingredient:
+      - VANILLA;COAL;64 # Automatically converts 64 vanilla coal into 1 Custom MMOItem!
+[/CODE]
+
+
+[SIZE=5][B][COLOR=#ffcc00]🚀 Installation & Setup[/COLOR][/B][/SIZE]
+[LIST=1]
+[*]Download [FONT=Courier New]StackCraft.jar[/FONT].
+[*]Drop it into your [FONT=Courier New]plugins/[/FONT] folder.
+[*]Make sure you have your required dependencies (e.g., ItemsAdder, Oraxen, MMOItems) installed if you plan to use custom items.
+[*]Restart your server.
+[*]Configure [FONT=Courier New]config.yml[/FONT] and [FONT=Courier New]message.yml[/FONT] to your liking!
+[/LIST]
+
+[SIZE=5][B][COLOR=#ffcc00]📄 Support & Documentation[/COLOR][/B][/SIZE]
+If you need any help, check out the [B][URL='https://sincerpg.github.io/StackCraft/']Official StackCraft Wiki[/URL][/B].

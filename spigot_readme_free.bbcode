@@ -1,0 +1,76 @@
+[CENTER]
+[IMG]https://raw.githubusercontent.com/SinceRPG/StackCraft/main/pickaxe.png[/IMG]
+[SIZE=7][B][COLOR=#ff9900]StackCraft (Lite/Free Version)[/COLOR][/B][/SIZE]
+[SIZE=4][I]A High-Performance Auto-Crafting & Item Conversion Plugin for PaperMC & Folia![/I][/SIZE]
+[/CENTER]
+
+
+[SIZE=5][B][COLOR=#ffcc00]🌟 Overview[/COLOR][/B][/SIZE]
+[B]StackCraft[/B] is an advanced, fully-customizable plugin designed to automatically convert and craft items in a player's inventory. 
+
+This is the [B]Lite/Free Version[/B] of StackCraft. It is designed to give you a taste of its powerful capabilities with essential features included! 
+
+
+[SIZE=5][B][COLOR=#ffcc00]⚡ Lite Version Features[/COLOR][/B][/SIZE]
+[LIST]
+[*][B]Vanilla & Basic Hook Support[/B]: Flawlessly converts and auto-crafts Vanilla items, as well as custom items from [B]MMOItems[/B] and [B]ItemEdit[/B].
+[*][B]Folia Support[/B]: Built from the ground up to be fully compatible with Folia, making it perfect for high-performance and heavily threaded servers.
+[*][B]Smart Queue Processing[/B]: Uses a configurable tick-based queue system to process auto-crafting seamlessly without lagging the main thread.
+[*][B]Dynamic Triggers[/B]: Auto-crafting happens naturally during gameplay! It triggers automatically when players break a block, pick up an item, kill a mob, or via an automated scheduled background task.
+[*][B]Smart Overflow Handling[/B]: If a player's inventory becomes full during crafting, the excess crafted items will automatically drop near the player instead of disappearing.
+[*][B]Global Crafting Toggle[/B]: Players can easily toggle their auto-crafting on and off globally.
+[*][B]PlaceholderAPI Support[/B]: Display players' global auto-crafting status easily on scoreboards and menus.
+[/LIST]
+
+
+[SIZE=5][B][COLOR=#ff3333]💎 Upgrade to StackCraft Premium![/COLOR][/B][/SIZE]
+Love the plugin? Upgrade to the Premium Version to unlock its full potential!
+[LIST]
+[*][B]Unlimited Crafting Recipes[/B] (The Free version is limited to a maximum of 5 crafting rules).
+[*][B]Full Custom Item Hooks[/B]: Unlocks support for ItemsAdder, Oraxen, ExecutableItems, Nexo, and MythicMobs!
+[*][B]Per-Item Custom Toggles[/B]: Allows players to toggle auto-crafting for specific items only (e.g., [FONT=Courier New]/coalcrafttoggle[/FONT]).
+[/LIST]
+
+
+[SIZE=5][B][COLOR=#ffcc00]⚙️ Commands & Permissions[/COLOR][/B][/SIZE]
+[B][COLOR=#00ff00]Admin Commands[/COLOR][/B]
+[LIST]
+[*][B]/stc reload[/B] - Reloads all configuration files and player data. ([I]Permission:[/I] [FONT=Courier New]stc.admin[/FONT])
+[/LIST]
+
+[B][COLOR=#00ff00]Player Commands[/COLOR][/B] (Requires [FONT=Courier New]stc.toggle[/FONT] permission)
+[LIST]
+[*][B]/stc help[/B] - Displays the help menu.
+[*][B]/stc toggle[/B] - Toggles the global auto-crafting status on or off for the player.
+[*][B]/stc craft[/B] - Manually forces an instant auto-craft check for the player's inventory.
+[*][B]/stc status[/B] - Shows the player their current global toggle status.
+[/LIST]
+
+
+[SIZE=5][B][COLOR=#ffcc00]📊 Placeholders (PlaceholderAPI)[/COLOR][/B][/SIZE]
+[LIST]
+[*][FONT=Courier New]%stc_toggle%[/FONT] - Returns the global toggle status (On/Off).
+[/LIST]
+
+
+[SIZE=5][B][COLOR=#ffcc00]🛠️ Configuration Example (Free Version)[/COLOR][/B][/SIZE]
+The syntax to define an item is: [FONT=Courier New]PLUGIN;ID;AMOUNT[/FONT]. 
+[CODE=yaml]
+craft:
+  # 1. Vanilla Recipe Example
+  VANILLA;COAL;1:
+    required_all: true 
+    ingredient:
+      - VANILLA;COAL_ORE;1   
+      - VANILLA;COAL_BLOCK;1 
+
+  # 2. MMOItems Hook Example
+  MMOITEMS;MATERIAL;CUSTOM_COAL;1:
+    ingredient:
+      - VANILLA;COAL;64 
+[/CODE]
+[I]Note: You can define up to 5 crafting rules in the Free version.[/I]
+
+
+[SIZE=5][B][COLOR=#ffcc00]📄 Support & Documentation[/COLOR][/B][/SIZE]
+If you need any help, check out the [B][URL='https://sincerpg.github.io/StackCraft/']Official StackCraft Wiki[/URL][/B].
