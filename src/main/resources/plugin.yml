@@ -15,6 +15,7 @@ softdepend:
   - Nexo
   - MythicMobs
   - PlaceholderAPI
+  - ItemEdit
 commands:
   stc:
     description: StackCraft CMD

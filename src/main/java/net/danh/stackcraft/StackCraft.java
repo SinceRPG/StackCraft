@@ -95,7 +95,7 @@ public final class StackCraft extends JavaPlugin {
         CraftCheck.clearQueue();
     }
 
-    private void checkDependencies() {
+    public void checkDependencies() {
         if (getServer().getPluginManager().isPluginEnabled("MMOItems")) isMMOItemsInstalled = true;
         if (getServer().getPluginManager().isPluginEnabled("ItemEdit")) isItemEditInstalled = true;
 

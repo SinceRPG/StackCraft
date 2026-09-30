@@ -117,8 +117,11 @@ public class Items {
                         return NexoItems.itemFromId(id).build();
                     break;
                 case "ITEMEDIT":
-                    if (StackCraft.isItemEditInstalled())
-                        return ItemEdit.get().getServerStorage().getItem(id);
+                    if (StackCraft.isItemEditInstalled()) {
+                        ItemStack itemEditItem = ItemEdit.get().getServerStorage().getItem(id);
+                        if (itemEditItem != null) return itemEditItem.clone();
+                        else Chat.debug("ItemEdit returned null for '" + id + "'. Available Server IDs: " + ItemEdit.get().getServerStorage().getIds());
+                    }
                     break;
                 case "MYTHICMOBS":
                     if (StackCraft.isMythicInstalled())

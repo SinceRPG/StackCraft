@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "net.danh"
-version = "1.8.2"
+version = "1.8.3"
 
 java {
     toolchain {
@@ -58,7 +58,7 @@ task buildAll {
         def p1 = buildCmd.execute(null, project.projectDir)
         p1.waitForProcessOutput(System.out, System.err)
         if (p1.exitValue() != 0) throw new GradleException("Premium build failed")
-        
+
         project.copy {
             from "build/libs"
             into "jar"

@@ -1,5 +1,6 @@
 package net.danh.stackcraft.cmd.mainCMD;
 
+import net.danh.stackcraft.StackCraft;
 import net.danh.stackcraft.cmd.smallCMD.SmallToggle;
 import net.danh.stackcraft.playerdata.PlayerData;
 import net.danh.stackcraft.resources.Chat;
@@ -41,7 +42,7 @@ public class STC_CMD extends CMDBase {
                 Files.reloadFiles();
 
                 Bukkit.getOnlinePlayers().forEach(p -> new PlayerData(p).loadData());
-
+                StackCraft.get().checkDependencies();
                 CraftCheck.loadCrafting();
 
                 Chat.sendMessage(c, Files.getMessage().getString("admin.reload_files"));
