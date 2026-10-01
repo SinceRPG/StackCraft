@@ -34,6 +34,7 @@ public class STC_CMD extends CMDBase {
             }
 
             if (c.hasPermission("stc.admin") && args[0].equalsIgnoreCase("reload")) {
+                Bukkit.getOnlinePlayers().forEach(p -> new PlayerData(p).saveData());
                 Items.full_toggle_craft.forEach((alias, id) -> new SmallToggle(alias, id).removeCommand());
                 Items.full_toggle_craft.clear();
                 Items.toggle_craft.clear();
@@ -48,8 +49,7 @@ public class STC_CMD extends CMDBase {
                 Chat.sendMessage(c, Files.getMessage().getString("admin.reload_files"));
             }
 
-            if (c.hasPermission("stc.toggle") && c instanceof Player) {
-                Player p = (Player) c;
+            if (c.hasPermission("stc.toggle") && c instanceof Player p) {
                 if (args[0].equalsIgnoreCase("toggle")) {
                     boolean newState = !Items.getGlobalToggle(p);
                     Items.setGlobalToggle(p, newState);
