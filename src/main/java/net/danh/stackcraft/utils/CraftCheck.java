@@ -104,7 +104,7 @@ public class CraftCheck {
             String toggleId = recipe.toggleId();
             boolean perToggle = Items.getPerToggle(p, toggleId);
 
-            if (!globalToggle && !(SCAPI.isPremium() && perToggle)) continue;
+            if (SCAPI.isPremium() ? !perToggle : !globalToggle) continue;
 
             if (!p.hasPermission("stc.toggle") && !p.hasPermission("stc.toggle." + toggleId)) {
                 if (perToggle) Items.setPerToggle(p, toggleId, false);
