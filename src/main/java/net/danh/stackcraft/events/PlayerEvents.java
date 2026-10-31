@@ -1,5 +1,6 @@
 package net.danh.stackcraft.events;
 
+import net.danh.stackcraft.StackCraft;
 import net.danh.stackcraft.playerdata.PlayerData;
 import net.danh.stackcraft.resources.Files;
 import net.danh.stackcraft.utils.CraftCheck;
@@ -21,9 +22,27 @@ public class PlayerEvents implements Listener {
         CraftCheck.addToQueue(e.getPlayer());
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPickup(EntityPickupItemEvent e) {
-        if (e.getEntity() instanceof Player p) CraftCheck.addToQueue(p);
+        if (!(e.getEntity() instanceof Player p)) return;
+
+        if (!e.isCancelled()) {
+            CraftCheck.addToQueue(p);
+            return;
+        }
+
+        if (e.getItem() == null) return;
+
+        // Custom item plugins like ExecutableItems put the item into the player's
+        // inventory, remove the item entity from the ground, and cancel the event.
+        if (e.getItem().isDead() || !e.getItem().isValid()) {
+            CraftCheck.addToQueue(p);
+            return;
+        }
+
+        if (StackCraft.isExecutableItemsInstalled() && Items.isExecutableItem(e.getItem().getItemStack())) {
+            CraftCheck.addToQueue(p);
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

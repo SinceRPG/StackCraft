@@ -146,9 +146,39 @@ public class Items {
         return split.length >= 3 ? Number.getInteger(split[2]) : 1;
     }
 
+    public static boolean isExecutableItem(ItemStack item) {
+        if (item == null || item.getType().isAir()) return false;
+        if (!StackCraft.isExecutableItemsInstalled()) return false;
+        try {
+            if (ExecutableItemsAPI.getExecutableItemsManager().getExecutableItem(item).isPresent()) {
+                return true;
+            }
+        } catch (Throwable ignored) {
+        }
+        try {
+            return ExecutableItemsAPI.getExecutableItemObject(item).isValid();
+        } catch (Throwable ignored) {
+        }
+        return false;
+    }
+
     public static boolean isSameItem(ItemStack i1, ItemStack i2) {
         if (i1 == null || i2 == null) return false;
-        return i1.isSimilar(i2);
+        if (i1.isSimilar(i2)) return true;
+
+        if (StackCraft.isExecutableItemsInstalled()) {
+            try {
+                var mgr = ExecutableItemsAPI.getExecutableItemsManager();
+                var ei1 = mgr.getExecutableItem(i1);
+                var ei2 = mgr.getExecutableItem(i2);
+                if (ei1.isPresent() && ei2.isPresent()) {
+                    return ei1.get().getId().equalsIgnoreCase(ei2.get().getId());
+                }
+            } catch (Throwable ignored) {
+            }
+        }
+
+        return false;
     }
 
     public static int getPlayerAmount(HumanEntity player, ItemStack item) {
